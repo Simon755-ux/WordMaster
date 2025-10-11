@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glostest – Spanska/Svenska</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button.small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .glos-input-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .glos-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 50px;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .glos-row input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .header-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 50px;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .verb-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .verb-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .verb-form label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .word-panel {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .input-box.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .irreg-input-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 15px;
+        }
+
+        .irreg-label {
+            min-width: 120px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .progress {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .score {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .score-correct {
+            color: #28a745;
+        }
+
+        .score-wrong {
+            color: #dc3545;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            max-width: 500px;
+            margin: 0 auto 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 2px;
+            background: #ddd;
+            padding: 5px;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: fit-content;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .cell.filled {
+            background: #667eea;
+        }
+
+        .cell:hover {
+            background: #f0f0f0;
+        }
+
+        .cell.valid-drop {
+            background: #b3e5b3 !important;
+            border-color: #28a745;
+        }
+
+        .cell.invalid-drop {
+            background: #ffb3b3 !important;
+            border-color: #dc3545;
+        }
+
+        .pieces-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .piece {
+            display: inline-grid;
+            gap: 2px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 3px solid transparent;
+            user-select: none;
+        }
+
+        .piece:active {
+            cursor: grabbing;
+        }
+
+        .piece:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .piece.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .piece.selected {
+            border-color: #667eea;
+            background: #e0e7ff;
+        }
+
+        .piece.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .piece-cell {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .piece-cell.active {
+            background: #667eea;
+        }
+
+        .glos-question-panel {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid #ffc107;
+            margin: 20px 0;
+        }
+
+        .glos-question-panel h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .glos-question-panel .word {
+            font-size: 1.8em;
+            text-align: center;
+            margin: 15px 0;
+            color: #333;
+        }
+
+        .glos-question-panel input {
+            width: 100%;
+            max-width: 400px;
+            display: block;
+            margin: 15px auto;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+        }
+
+        .flipcard-container {
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .flipcard {
+            width: 500px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .flipcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flipcard-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flipcard-front, .flipcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .flipcard-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .flipcard-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇪🇸 Glostest – Spanska/Svenska</h1>
+        
+        <div id="screen-main-menu">
+            <h2>Välj vad du vill göra:</h2>
+            <div class="button-group">
+                <button onclick="selectType('glosor')">Öva glosor</button>
+                <button onclick="selectType('verb')">Böja verb</button>
+                <button onclick="selectType('flipcards')">🃏 FlipCards</button>
+                <button onclick="selectType('spel')">🎮 Spel</button>
+            </div>
+        </div>
+
+        <div id="screen-game-menu" class="hidden">
+            <h2>🎮 Välj spel:</h2>
+            <div class="button-group">
+                <button onclick="goToBlockBlast()">🧱 BlockBlast</button>
+                <button onclick="goToRocketShips()">🚀 Rocket Ships</button>
+                <button onclick="goToMainMenu()">Tillbaka</button>
+            </div>
+        </div>
+
+        <!-- Resten av koden finns i nästa meddelande... -->
+    </div>
+</body>
+</html>
