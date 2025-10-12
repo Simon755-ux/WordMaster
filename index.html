@@ -2,13 +2,14 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Glostest – Spanska/Svenska</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -18,54 +19,77 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
             background: white;
             border-radius: 20px;
-            padding: 40px;
+            padding: 20px;
             max-width: 1000px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-height: 90vh;
+            max-height: 95vh;
             overflow-y: auto;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px;
+                max-height: 90vh;
+            }
         }
 
         h1 {
             color: #667eea;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+            }
         }
 
         h2 {
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
+            font-size: 1.2em;
+        }
+
+        @media (min-width: 768px) {
+            h2 {
+                margin-bottom: 20px;
+                font-size: 1.5em;
+            }
         }
 
         .button-group {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         button {
             background: #667eea;
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 12px 20px;
             border-radius: 10px;
-            font-size: 1.1em;
+            font-size: 0.9em;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
+            touch-action: manipulation;
         }
 
-        button:hover {
+        button:hover, button:active {
             background: #764ba2;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -73,18 +97,17 @@
 
         button.small {
             padding: 8px 15px;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
 
         .hidden {
             display: none;
         }
 
-        /* Glosinmatning */
         .glos-input-container {
-            max-height: 400px;
+            max-height: 50vh;
             overflow-y: auto;
-            margin: 20px 0;
+            margin: 15px 0;
             padding: 10px;
             border: 2px solid #ddd;
             border-radius: 10px;
@@ -92,77 +115,77 @@
 
         .glos-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 50px;
-            gap: 10px;
-            margin-bottom: 10px;
+            grid-template-columns: 1fr 1fr 40px;
+            gap: 8px;
+            margin-bottom: 8px;
             align-items: center;
         }
 
         .glos-row input {
-            padding: 10px;
+            padding: 8px;
             border: 2px solid #ddd;
             border-radius: 5px;
-            font-size: 1em;
+            font-size: 0.9em;
         }
 
         .remove-btn {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 8px;
+            padding: 6px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1em;
         }
 
         .header-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 50px;
-            gap: 10px;
-            margin-bottom: 10px;
+            grid-template-columns: 1fr 1fr 40px;
+            gap: 8px;
+            margin-bottom: 8px;
             font-weight: bold;
             color: #667eea;
+            font-size: 0.9em;
         }
 
-        /* Verb */
         .verb-form {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .verb-form input {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             margin: 5px 0;
             border: 2px solid #ddd;
             border-radius: 5px;
-            font-size: 1em;
+            font-size: 0.9em;
         }
 
         .verb-form label {
             font-weight: bold;
             color: #555;
             display: block;
-            margin-top: 10px;
+            margin-top: 8px;
+            font-size: 0.9em;
         }
 
-        /* Test */
         .word-panel {
             background: #f5f5f5;
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
-            margin: 20px 0;
+            margin: 15px 0;
             text-align: center;
-            font-size: 1.8em;
+            font-size: 1.3em;
             color: #333;
         }
 
         .input-box {
             width: 100%;
-            padding: 15px;
-            font-size: 1.2em;
+            padding: 12px;
+            font-size: 1em;
             border: 3px solid #ddd;
             border-radius: 10px;
             margin: 10px 0;
@@ -176,22 +199,23 @@
         .irreg-input-row {
             display: flex;
             align-items: center;
-            margin: 10px 0;
-            gap: 15px;
+            margin: 8px 0;
+            gap: 10px;
         }
 
         .irreg-label {
-            min-width: 120px;
+            min-width: 80px;
             font-weight: bold;
             color: #555;
+            font-size: 0.9em;
         }
 
         .feedback {
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
-            margin: 20px 0;
+            margin: 15px 0;
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: bold;
         }
 
@@ -207,16 +231,16 @@
 
         .progress {
             text-align: center;
-            margin: 20px 0;
-            font-size: 1.2em;
+            margin: 15px 0;
+            font-size: 1em;
             color: #555;
         }
 
         .score {
             display: flex;
             justify-content: space-around;
-            margin: 20px 0;
-            font-size: 1.5em;
+            margin: 15px 0;
+            font-size: 1.2em;
         }
 
         .score-correct {
@@ -227,31 +251,30 @@
             color: #dc3545;
         }
 
-        /* BlockBlast */
         .game-info {
             display: flex;
             justify-content: space-between;
             max-width: 500px;
-            margin: 0 auto 20px;
-            font-size: 1.2em;
+            margin: 0 auto 15px;
+            font-size: 1em;
             font-weight: bold;
         }
 
         .game-board {
             display: grid;
-            grid-template-columns: repeat(8, 50px);
-            grid-template-rows: repeat(8, 50px);
+            grid-template-columns: repeat(8, 35px);
+            grid-template-rows: repeat(8, 35px);
             gap: 2px;
             background: #ddd;
             padding: 5px;
             border-radius: 10px;
-            margin: 20px auto;
+            margin: 15px auto;
             width: fit-content;
         }
 
         .cell {
-            width: 50px;
-            height: 50px;
+            width: 35px;
+            height: 35px;
             background: white;
             border: 1px solid #ccc;
             border-radius: 3px;
@@ -263,7 +286,7 @@
             background: #667eea;
         }
 
-        .cell:hover {
+        .cell:hover, .cell:active {
             background: #f0f0f0;
         }
 
@@ -279,36 +302,32 @@
 
         .pieces-container {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .piece {
             display: inline-grid;
             gap: 2px;
-            padding: 10px;
+            padding: 8px;
             background: #f0f0f0;
             border-radius: 10px;
-            cursor: grab;
+            cursor: pointer;
             transition: all 0.2s;
             border: 3px solid transparent;
             user-select: none;
+            touch-action: none;
         }
 
         .piece:active {
             cursor: grabbing;
         }
 
-        .piece:hover {
+        .piece:hover, .piece:active {
             transform: scale(1.05);
             border-color: #667eea;
-        }
-
-        .piece.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
         }
 
         .piece.selected {
@@ -322,8 +341,8 @@
         }
 
         .piece-cell {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             background: white;
             border: 1px solid #ccc;
             border-radius: 3px;
@@ -335,22 +354,23 @@
 
         .glos-question-panel {
             background: #fff3cd;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             border: 3px solid #ffc107;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .glos-question-panel h3 {
             color: #856404;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
+            font-size: 1em;
         }
 
         .glos-question-panel .word {
-            font-size: 1.8em;
+            font-size: 1.4em;
             text-align: center;
-            margin: 15px 0;
+            margin: 12px 0;
             color: #333;
         }
 
@@ -358,24 +378,24 @@
             width: 100%;
             max-width: 400px;
             display: block;
-            margin: 15px auto;
-            padding: 12px;
-            font-size: 1.1em;
+            margin: 12px auto;
+            padding: 10px;
+            font-size: 1em;
             border: 2px solid #ffc107;
             border-radius: 8px;
         }
 
-        /* FlipCards */
         .flipcard-container {
             perspective: 1000px;
             display: flex;
             justify-content: center;
-            margin: 40px 0;
+            margin: 30px 0;
         }
 
         .flipcard {
-            width: 500px;
-            height: 300px;
+            width: 100%;
+            max-width: 500px;
+            height: 200px;
             cursor: pointer;
         }
 
@@ -400,10 +420,10 @@
             align-items: center;
             justify-content: center;
             border-radius: 20px;
-            font-size: 2em;
+            font-size: 1.4em;
             font-weight: bold;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 40px;
+            padding: 20px;
             text-align: center;
         }
 
@@ -417,13 +437,94 @@
             color: white;
             transform: rotateY(180deg);
         }
+
+        .mobile-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 60px);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+            touch-action: none;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-controls {
+                display: none;
+            }
+        }
+
+        .control-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            touch-action: none;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:active {
+            background: #764ba2;
+            transform: scale(0.95);
+        }
+
+        .control-btn.up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .control-btn.left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .control-btn.down {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .control-btn.right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .control-btn.pause {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: #ffc107;
+            color: #000;
+        }
+
+        #rocket-canvas {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            background: #000;
+            display: block;
+            margin: 15px auto;
+            touch-action: none;
+        }
+
+        .controls-info {
+            text-align: center;
+            margin: 15px 0;
+            color: #666;
+            font-size: 0.85em;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🇪🇸 Glostest – Spanska/Svenska</h1>
         
-        <!-- Huvudmeny -->
         <div id="screen-main-menu">
             <h2>Välj vad du vill göra:</h2>
             <div class="button-group">
@@ -434,7 +535,6 @@
             </div>
         </div>
 
-        <!-- Spelmeny -->
         <div id="screen-game-menu" class="hidden">
             <h2>🎮 Välj spel:</h2>
             <div class="button-group">
@@ -444,7 +544,6 @@
             </div>
         </div>
 
-        <!-- BlockBlast glosinmatning -->
         <div id="screen-blockblast-input" class="hidden">
             <h2>Lägg in glosor för BlockBlast:</h2>
             <div class="header-row">
@@ -460,7 +559,6 @@
             </div>
         </div>
 
-        <!-- BlockBlast spel -->
         <div id="screen-blockblast" class="hidden">
             <h2>🧱 BlockBlast</h2>
             <div class="game-info">
@@ -489,7 +587,6 @@
             </div>
         </div>
 
-        <!-- RocketShips glosinmatning -->
         <div id="screen-rocketships-input" class="hidden">
             <h2>Lägg in glosor för Rocket Ships:</h2>
             <div class="header-row">
@@ -505,7 +602,6 @@
             </div>
         </div>
 
-        <!-- RocketShips spel -->
         <div id="screen-rocketships" class="hidden">
             <h2>🚀 Rocket Ships</h2>
             <div class="game-info">
@@ -514,10 +610,18 @@
                 <div>Poäng: <span id="rocket-score">0</span></div>
             </div>
             
-            <canvas id="rocket-canvas" width="800" height="600" style="border: 3px solid #667eea; border-radius: 10px; background: #000; display: block; margin: 20px auto;"></canvas>
+            <canvas id="rocket-canvas" width="800" height="600"></canvas>
             
-            <div style="text-align: center; margin: 20px 0; color: #666;">
-                <strong>Kontroller:</strong> W/↑ = Upp | S/↓ = Ner | A/← = Vänster | D/→ = Höger | SPACE = Pausa
+            <div class="mobile-controls" id="mobile-controls">
+                <button class="control-btn up" id="btn-up">↑</button>
+                <button class="control-btn left" id="btn-left">←</button>
+                <button class="control-btn down" id="btn-down">↓</button>
+                <button class="control-btn right" id="btn-right">→</button>
+                <button class="control-btn pause" id="btn-pause">PAUSA</button>
+            </div>
+            
+            <div class="controls-info">
+                <strong>Desktop:</strong> W/↑ = Upp | S/↓ = Ner | A/← = Vänster | D/→ = Höger | SPACE = Pausa
             </div>
             
             <div id="rocket-question-container" class="hidden">
@@ -537,7 +641,6 @@
             </div>
         </div>
 
-        <!-- FlipCards glosinmatning -->
         <div id="screen-flipcards-input" class="hidden">
             <h2>Lägg in glosor för FlipCards:</h2>
             <div class="header-row">
@@ -549,14 +652,13 @@
             <div class="button-group">
                 <button onclick="addFlipCardsGlosRow()" class="small">+ Lägg till rad</button>
                 <button onclick="startFlipCardsGame()">Starta FlipCards</button>
-                <button onclick="goBack('screen-game-menu')">Tillbaka</button>
+                <button onclick="goBack('screen-main-menu')">Tillbaka</button>
             </div>
         </div>
 
-        <!-- FlipCards spel -->
         <div id="screen-flipcards" class="hidden">
             <h2>🃏 FlipCards</h2>
-            <div class="progress" style="font-size: 1.3em; margin: 20px 0;">
+            <div class="progress">
                 Kort <span id="flipcard-current">1</span> av <span id="flipcard-total">0</span>
             </div>
             
@@ -573,7 +675,7 @@
                 </div>
             </div>
             
-            <div style="text-align: center; margin: 20px 0; color: #666;">
+            <div style="text-align: center; margin: 15px 0; color: #666; font-size: 0.9em;">
                 Klicka på kortet för att vända det!
             </div>
             
@@ -585,7 +687,7 @@
             
             <div id="flipcard-complete" class="hidden" style="text-align: center; margin-top: 30px;">
                 <h2 style="color: #28a745;">🎉 Klart!</h2>
-                <div style="font-size: 1.3em; margin: 20px 0;">
+                <div style="font-size: 1.2em; margin: 20px 0;">
                     <div style="color: #28a745; margin: 10px 0;">Kunde: <span id="flipcard-known-count">0</span></div>
                     <div style="color: #dc3545; margin: 10px 0;">Kunde inte: <span id="flipcard-unknown-count">0</span></div>
                 </div>
@@ -597,7 +699,6 @@
             </div>
         </div>
 
-        <!-- Lägg in glosor -->
         <div id="screen-input-glosor" class="hidden">
             <h2>Lägg in dina glosor:</h2>
             <div class="header-row">
@@ -613,7 +714,6 @@
             </div>
         </div>
 
-        <!-- Välj riktning för glosor -->
         <div id="screen-glos-direction" class="hidden">
             <h2>Välj språkläge:</h2>
             <div class="button-group">
@@ -623,7 +723,6 @@
             </div>
         </div>
 
-        <!-- Lägg in verb -->
         <div id="screen-input-verb" class="hidden">
             <h2>Lägg in dina verb:</h2>
             <div id="verb-container"></div>
@@ -634,7 +733,6 @@
             </div>
         </div>
 
-        <!-- Test -->
         <div id="screen-test" class="hidden">
             <div class="progress" id="progress"></div>
             <div class="word-panel" id="question"></div>
@@ -645,7 +743,6 @@
             <div id="feedback"></div>
         </div>
 
-        <!-- Resultat -->
         <div id="screen-result" class="hidden">
             <h2>✅ Resultat</h2>
             <div class="score">
@@ -660,7 +757,6 @@
     </div>
 
     <script>
-        // Globala variabler
         const labels = ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas"];
         let testType = null;
         let mode = null;
@@ -673,7 +769,6 @@
         let attemptsLeft = 2;
         let correctFlags = [];
 
-        // BlockBlast variabler
         let gameGrid = [];
         let gameScore = 0;
         let currentPieces = [];
@@ -683,7 +778,6 @@
         let currentGlosIndex = 0;
         let glosMode = 'svenska';
 
-        // RocketShips variabler
         let rocketCanvas, rocketCtx;
         let rocketPlayer, rocketEnemies, rocketBullets, rocketEnemyBullets;
         let rocketKeys = {};
@@ -699,7 +793,6 @@
         let rocketCountdown = 0;
         let rocketCountdownActive = false;
 
-        // FlipCards variabler
         let flipCardsData = [];
         let flipCardsOriginalData = [];
         let flipCardsCurrent = 0;
@@ -719,13 +812,11 @@
             [[1,0],[1,1]]
         ];
 
-        // Visa skärm
         function showScreen(screenId) {
             document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden'));
             document.getElementById(screenId).classList.remove('hidden');
         }
 
-        // Välj typ
         function selectType(type) {
             testType = type;
             if (type === 'glosor') {
@@ -741,9 +832,7 @@
             }
         }
 
-        // Navigering
         function goToMainMenu() {
-            // Stop rocket game if running
             if (rocketGameRunning) {
                 rocketGameRunning = false;
                 if (rocketGameLoop) {
@@ -752,9 +841,9 @@
                 }
                 document.removeEventListener('keydown', handleRocketKeyDown);
                 document.removeEventListener('keyup', handleRocketKeyUp);
+                removeMobileControls();
                 rocketKeys = {};
                 
-                // Clear canvas
                 if (rocketCanvas && rocketCtx) {
                     rocketCtx.clearRect(0, 0, rocketCanvas.width, rocketCanvas.height);
                 }
@@ -771,752 +860,6 @@
             showScreen(screenId);
         }
 
-        // === BLOCKBLAST ===
-        function goToBlockBlast() {
-            showScreen('screen-blockblast-input');
-            const container = document.getElementById('blockblast-glos-container');
-            container.innerHTML = '';
-            for (let i = 0; i < 15; i++) {
-                addBlockBlastGlosRow();
-            }
-        }
-
-        // === ROCKETSHIPS ===
-        function goToRocketShips() {
-            showScreen('screen-rocketships-input');
-            const container = document.getElementById('rocketships-glos-container');
-            container.innerHTML = '';
-            for (let i = 0; i < 15; i++) {
-                addRocketShipsGlosRow();
-            }
-        }
-
-        // === FLIPCARDS ===
-        function goToFlipCards() {
-            showScreen('screen-flipcards-input');
-            const container = document.getElementById('flipcards-glos-container');
-            container.innerHTML = '';
-            for (let i = 0; i < 20; i++) {
-                addFlipCardsGlosRow();
-            }
-        }
-
-        function addFlipCardsGlosRow() {
-            const container = document.getElementById('flipcards-glos-container');
-            const row = document.createElement('div');
-            row.className = 'glos-row';
-            row.innerHTML = `
-                <input type="text" placeholder="Svenskt ord" class="fc-glos-sv">
-                <input type="text" placeholder="Spanskt ord" class="fc-glos-es">
-                <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
-            `;
-            container.appendChild(row);
-        }
-
-        function startFlipCardsGame() {
-            flipCardsData = [];
-            document.querySelectorAll('#flipcards-glos-container .glos-row').forEach(row => {
-                const sv = row.querySelector('.fc-glos-sv').value.trim();
-                const es = row.querySelector('.fc-glos-es').value.trim();
-                if (sv && es) {
-                    flipCardsData.push({ svenska: sv, spanska: es });
-                }
-            });
-
-            if (flipCardsData.length === 0) {
-                alert('Du måste lägga in minst en glos!');
-                return;
-            }
-
-            flipCardsOriginalData = [...flipCardsData];
-            flipCardsData.sort(() => Math.random() - 0.5);
-            flipCardsCurrent = 0;
-            flipCardsKnown = [];
-            flipCardsUnknown = [];
-            
-            showScreen('screen-flipcards');
-            document.getElementById('flipcard-complete').classList.add('hidden');
-            displayFlipCard();
-        }
-
-        function displayFlipCard() {
-            if (flipCardsCurrent >= flipCardsData.length) {
-                showFlipCardComplete();
-                return;
-            }
-
-            const card = flipCardsData[flipCardsCurrent];
-            flipCardsIsFlipped = false;
-            
-            document.getElementById('flipcard-inner').classList.remove('flipped');
-            document.getElementById('flipcard-front-text').textContent = card.svenska;
-            document.getElementById('flipcard-back-text').textContent = card.spanska;
-            document.getElementById('flipcard-current').textContent = flipCardsCurrent + 1;
-            document.getElementById('flipcard-total').textContent = flipCardsData.length;
-        }
-
-        function flipCard() {
-            flipCardsIsFlipped = !flipCardsIsFlipped;
-            const inner = document.getElementById('flipcard-inner');
-            if (flipCardsIsFlipped) {
-                inner.classList.add('flipped');
-            } else {
-                inner.classList.remove('flipped');
-            }
-        }
-
-        function markCard(status) {
-            const card = flipCardsData[flipCardsCurrent];
-            
-            if (status === 'known') {
-                flipCardsKnown.push(card);
-            } else {
-                flipCardsUnknown.push(card);
-            }
-            
-            nextCard();
-        }
-
-        function nextCard() {
-            flipCardsCurrent++;
-            displayFlipCard();
-        }
-
-        function showFlipCardComplete() {
-            document.getElementById('flipcard').style.display = 'none';
-            document.querySelector('#screen-flipcards .button-group:not(#flipcard-buttons)').style.display = 'none';
-            document.getElementById('flipcard-complete').classList.remove('hidden');
-            document.getElementById('flipcard-known-count').textContent = flipCardsKnown.length;
-            document.getElementById('flipcard-unknown-count').textContent = flipCardsUnknown.length;
-        }
-
-        function restartFlipCards(mode) {
-            if (mode === 'mistakes') {
-                if (flipCardsUnknown.length === 0) {
-                    alert('Inga misstag att öva på! Du kunde alla! 🎉');
-                    return;
-                }
-                flipCardsData = [...flipCardsUnknown];
-            } else {
-                flipCardsData = [...flipCardsOriginalData];
-            }
-            
-            flipCardsData.sort(() => Math.random() - 0.5);
-            flipCardsCurrent = 0;
-            flipCardsKnown = [];
-            flipCardsUnknown = [];
-            
-            document.getElementById('flipcard').style.display = 'block';
-            document.querySelector('#screen-flipcards .button-group:not(#flipcard-buttons)').style.display = 'flex';
-            document.getElementById('flipcard-complete').classList.add('hidden');
-            displayFlipCard();
-        }
-
-        // === ROCKETSHIPS FORTSÄTTNING ===
-
-        function addRocketShipsGlosRow() {
-            const container = document.getElementById('rocketships-glos-container');
-            const row = document.createElement('div');
-            row.className = 'glos-row';
-            row.innerHTML = `
-                <input type="text" placeholder="Svenskt ord" class="rs-glos-sv">
-                <input type="text" placeholder="Spanskt ord" class="rs-glos-es">
-                <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
-            `;
-            container.appendChild(row);
-        }
-
-        function startRocketShipsGame() {
-            rocketGlosData = [];
-            document.querySelectorAll('#rocketships-glos-container .glos-row').forEach(row => {
-                const sv = row.querySelector('.rs-glos-sv').value.trim();
-                const es = row.querySelector('.rs-glos-es').value.trim();
-                if (sv && es) {
-                    rocketGlosData.push({ svenska: sv, spanska: es });
-                }
-            });
-
-            if (rocketGlosData.length === 0) {
-                alert('Du måste lägga in minst en glos!');
-                return;
-            }
-
-            rocketGlosData.sort(() => Math.random() - 0.5);
-            rocketGlosIndex = 0;
-            initializeRocketGame();
-            showScreen('screen-rocketships');
-        }
-
-        function initializeRocketGame() {
-            rocketCanvas = document.getElementById('rocket-canvas');
-            rocketCtx = rocketCanvas.getContext('2d');
-            
-            // Reset all game state
-            rocketWave = 1;
-            rocketScore = 0;
-            rocketLives = 3;
-            rocketPaused = false;
-            rocketGameRunning = true;
-            rocketShootTimer = 0;
-            rocketKeys = {};
-            
-            rocketPlayer = {
-                x: 50,
-                y: rocketCanvas.height / 2,
-                width: 40,
-                height: 30,
-                speed: 5
-            };
-            
-            rocketBullets = [];
-            rocketEnemyBullets = [];
-            rocketEnemies = [];
-            
-            // Clear any existing event listeners
-            document.removeEventListener('keydown', handleRocketKeyDown);
-            document.removeEventListener('keyup', handleRocketKeyUp);
-            
-            // Add new event listeners
-            document.addEventListener('keydown', handleRocketKeyDown);
-            document.addEventListener('keyup', handleRocketKeyUp);
-            
-            updateRocketUI();
-            
-            // Cancel any existing game loop
-            if (rocketGameLoop) {
-                cancelAnimationFrame(rocketGameLoop);
-            }
-            
-            // Start countdown before spawning enemies
-            rocketCountdown = 3;
-            rocketCountdownActive = true;
-            
-            const countdownInterval = setInterval(() => {
-                rocketCountdown--;
-                if (rocketCountdown <= 0) {
-                    clearInterval(countdownInterval);
-                    rocketCountdownActive = false;
-                    spawnEnemyWave();
-                }
-            }, 1000);
-            
-            // Start new game loop
-            gameLoopRocket();
-        }
-
-        function handleRocketKeyDown(e) {
-            // Ignorera tangenttryckningar om användaren skriver i input-fält
-            if (document.activeElement.tagName === 'INPUT') {
-                return;
-            }
-            
-            if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', ' '].includes(e.key.toLowerCase())) {
-                e.preventDefault();
-            }
-            
-            if (e.key === ' ') {
-                rocketPaused = !rocketPaused;
-                return;
-            }
-            
-            rocketKeys[e.key.toLowerCase()] = true;
-        }
-
-        function handleRocketKeyUp(e) {
-            // Ignorera tangenttryckningar om användaren skriver i input-fält
-            if (document.activeElement.tagName === 'INPUT') {
-                return;
-            }
-            
-            rocketKeys[e.key.toLowerCase()] = false;
-        }
-
-        function spawnEnemyWave() {
-            rocketEnemies = [];
-            let enemyCount;
-            
-            if (rocketWave <= 3) {
-                enemyCount = rocketWave * 5;
-                
-                for (let i = 0; i < enemyCount; i++) {
-                    rocketEnemies.push({
-                        x: rocketCanvas.width - 100 - Math.random() * 150,
-                        y: 50 + Math.random() * (rocketCanvas.height - 100),
-                        width: 35,
-                        height: 35,
-                        speed: 1 + Math.random() * 0.5,
-                        health: 1,
-                        shootTimer: Math.random() * 120,
-                        movePattern: Math.random() < 0.5 ? 'circle' : 'wave',
-                        angle: Math.random() * Math.PI * 2,
-                        centerX: rocketCanvas.width * 0.7,
-                        centerY: rocketCanvas.height / 2,
-                        radius: 80 + Math.random() * 50
-                    });
-                }
-            } else {
-                // Boss wave
-                rocketEnemies.push({
-                    x: rocketCanvas.width - 150,
-                    y: rocketCanvas.height / 2 - 50,
-                    width: 80,
-                    height: 80,
-                    speed: 1,
-                    health: 10,
-                    maxHealth: 10,
-                    isBoss: true,
-                    shootTimer: 0,
-                    angle: 0,
-                    centerX: rocketCanvas.width * 0.7,
-                    centerY: rocketCanvas.height / 2,
-                    radius: 60
-                });
-            }
-        }
-
-        function gameLoopRocket() {
-            if (!rocketGameRunning) return;
-            
-            if (!rocketPaused) {
-                updateRocket();
-                drawRocket();
-            } else {
-                rocketCtx.fillStyle = 'rgba(0,0,0,0.5)';
-                rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
-                rocketCtx.fillStyle = 'white';
-                rocketCtx.font = '40px Arial';
-                rocketCtx.textAlign = 'center';
-                rocketCtx.fillText('PAUSAD', rocketCanvas.width / 2, rocketCanvas.height / 2);
-                rocketCtx.font = '20px Arial';
-                rocketCtx.fillText('Tryck SPACE för att fortsätta', rocketCanvas.width / 2, rocketCanvas.height / 2 + 40);
-            }
-            
-            rocketGameLoop = requestAnimationFrame(gameLoopRocket);
-        }
-
-        function updateRocket() {
-            // Move player (kan alltid röra sig, även under countdown)
-            if (rocketKeys['w'] || rocketKeys['arrowup']) rocketPlayer.y -= rocketPlayer.speed;
-            if (rocketKeys['s'] || rocketKeys['arrowdown']) rocketPlayer.y += rocketPlayer.speed;
-            if (rocketKeys['a'] || rocketKeys['arrowleft']) rocketPlayer.x -= rocketPlayer.speed;
-            if (rocketKeys['d'] || rocketKeys['arrowright']) rocketPlayer.x += rocketPlayer.speed;
-            
-            rocketPlayer.x = Math.max(0, Math.min(rocketCanvas.width - rocketPlayer.width, rocketPlayer.x));
-            rocketPlayer.y = Math.max(0, Math.min(rocketCanvas.height - rocketPlayer.height, rocketPlayer.y));
-            
-            // Under countdown - visa bara countdown och låt spelaren röra sig
-            if (rocketCountdownActive) {
-                return;
-            }
-            
-            // Auto shoot
-            rocketShootTimer++;
-            if (rocketShootTimer >= 60) {
-                rocketBullets.push({
-                    x: rocketPlayer.x + rocketPlayer.width,
-                    y: rocketPlayer.y + rocketPlayer.height / 2,
-                    width: 10,
-                    height: 4,
-                    speed: 8
-                });
-                rocketShootTimer = 0;
-            }
-            
-            // Move bullets
-            rocketBullets.forEach(b => b.x += b.speed);
-            rocketBullets = rocketBullets.filter(b => b.x < rocketCanvas.width);
-            
-            // Move enemy bullets
-            rocketEnemyBullets.forEach(b => {
-                b.x += b.speedX;
-                b.y += b.speedY;
-            });
-            rocketEnemyBullets = rocketEnemyBullets.filter(b => 
-                b.x > -20 && b.x < rocketCanvas.width + 20 && 
-                b.y > -20 && b.y < rocketCanvas.height + 20
-            );
-            
-            // Move enemies
-            rocketEnemies.forEach(e => {
-                if (e.isBoss) {
-                    // Boss circular movement
-                    e.angle += 0.02;
-                    e.x = e.centerX + Math.cos(e.angle) * e.radius;
-                    e.y = e.centerY + Math.sin(e.angle) * e.radius;
-                } else {
-                    // Different movement patterns for regular enemies
-                    if (e.movePattern === 'circle') {
-                        e.angle += 0.03 * e.speed;
-                        e.x = e.centerX + Math.cos(e.angle) * e.radius;
-                        e.y = e.centerY + Math.sin(e.angle) * e.radius;
-                    } else {
-                        // Wave pattern
-                        e.angle += 0.05 * e.speed;
-                        e.y = e.centerY + Math.sin(e.angle) * 60;
-                        e.x = e.centerX + Math.cos(e.angle * 0.5) * 40;
-                    }
-                }
-                
-                // Keep enemies in bounds
-                e.x = Math.max(rocketCanvas.width * 0.4, Math.min(rocketCanvas.width - e.width - 20, e.x));
-                e.y = Math.max(20, Math.min(rocketCanvas.height - e.height - 20, e.y));
-                
-                // Enemy shooting
-                e.shootTimer++;
-                const shootInterval = e.isBoss ? 30 : 90;
-                if (e.shootTimer >= shootInterval) {
-                    // Shoot towards player
-                    const dx = rocketPlayer.x - e.x;
-                    const dy = rocketPlayer.y - e.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const bulletSpeed = 3;
-                    
-                    rocketEnemyBullets.push({
-                        x: e.x,
-                        y: e.y + e.height / 2,
-                        width: 8,
-                        height: 8,
-                        speedX: (dx / distance) * bulletSpeed,
-                        speedY: (dy / distance) * bulletSpeed
-                    });
-                    e.shootTimer = 0;
-                }
-            });
-            
-            // Collision: Player bullets with enemies
-            rocketBullets.forEach((b, bIndex) => {
-                rocketEnemies.forEach((e, eIndex) => {
-                    if (b.x < e.x + e.width && b.x + b.width > e.x &&
-                        b.y < e.y + e.height && b.y + b.height > e.y) {
-                        rocketBullets.splice(bIndex, 1);
-                        e.health--;
-                        if (e.health <= 0) {
-                            rocketEnemies.splice(eIndex, 1);
-                            rocketScore += e.isBoss ? 50 : 10;
-                            updateRocketUI();
-                        }
-                    }
-                });
-            });
-            
-            // Collision: Enemy bullets with player
-            rocketEnemyBullets.forEach((b, bIndex) => {
-                if (b.x < rocketPlayer.x + rocketPlayer.width && b.x + b.width > rocketPlayer.x &&
-                    b.y < rocketPlayer.y + rocketPlayer.height && b.y + b.height > rocketPlayer.y) {
-                    rocketEnemyBullets.splice(bIndex, 1);
-                    rocketLives--;
-                    updateRocketUI();
-                    if (rocketLives <= 0) {
-                        gameOverRocket();
-                    }
-                }
-            });
-            
-            // Check if wave cleared
-            if (rocketEnemies.length === 0) {
-                rocketPaused = true;
-                showRocketGlosQuestion();
-            }
-        }
-
-        function drawRocket() {
-            // Background - animated starfield
-            rocketCtx.fillStyle = '#0a0a1a';
-            rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
-            
-            // Animated stars
-            rocketCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            const time = Date.now() * 0.0001;
-            for (let i = 0; i < 100; i++) {
-                const x = ((i * 123 + time * 50) % rocketCanvas.width);
-                const y = (i * 456 % rocketCanvas.height);
-                const size = (i % 3) + 1;
-                rocketCtx.fillRect(x, y, size, size);
-            }
-            
-            // Draw player - sleek spaceship
-            rocketCtx.save();
-            rocketCtx.shadowBlur = 20;
-            rocketCtx.shadowColor = '#00ffff';
-            
-            // Main body (cyan/turquoise gradient)
-            const gradient = rocketCtx.createLinearGradient(rocketPlayer.x, rocketPlayer.y, rocketPlayer.x + rocketPlayer.width, rocketPlayer.y);
-            gradient.addColorStop(0, '#00ccff');
-            gradient.addColorStop(1, '#00ffff');
-            rocketCtx.fillStyle = gradient;
-            
-            rocketCtx.beginPath();
-            rocketCtx.moveTo(rocketPlayer.x, rocketPlayer.y + rocketPlayer.height / 2);
-            rocketCtx.lineTo(rocketPlayer.x + 10, rocketPlayer.y + 5);
-            rocketCtx.lineTo(rocketPlayer.x + rocketPlayer.width - 5, rocketPlayer.y);
-            rocketCtx.lineTo(rocketPlayer.x + rocketPlayer.width, rocketPlayer.y + rocketPlayer.height / 2);
-            rocketCtx.lineTo(rocketPlayer.x + rocketPlayer.width - 5, rocketPlayer.y + rocketPlayer.height);
-            rocketCtx.lineTo(rocketPlayer.x + 10, rocketPlayer.y + rocketPlayer.height - 5);
-            rocketCtx.closePath();
-            rocketCtx.fill();
-            
-            // Cockpit window
-            rocketCtx.shadowBlur = 10;
-            rocketCtx.fillStyle = '#ffffff';
-            rocketCtx.beginPath();
-            rocketCtx.arc(rocketPlayer.x + rocketPlayer.width - 12, rocketPlayer.y + rocketPlayer.height / 2, 7, 0, Math.PI * 2);
-            rocketCtx.fill();
-            
-            // Engine glow
-            rocketCtx.shadowBlur = 25;
-            rocketCtx.shadowColor = '#00ffff';
-            rocketCtx.fillStyle = 'rgba(0, 255, 255, 0.6)';
-            rocketCtx.beginPath();
-            rocketCtx.moveTo(rocketPlayer.x, rocketPlayer.y + rocketPlayer.height / 2);
-            rocketCtx.lineTo(rocketPlayer.x - 10, rocketPlayer.y + rocketPlayer.height / 2 - 8);
-            rocketCtx.lineTo(rocketPlayer.x - 10, rocketPlayer.y + rocketPlayer.height / 2 + 8);
-            rocketCtx.closePath();
-            rocketCtx.fill();
-            
-            rocketCtx.restore();
-            
-            // Draw bullets with trail effect
-            rocketCtx.save();
-            rocketBullets.forEach(b => {
-                // Trail
-                rocketCtx.shadowBlur = 15;
-                rocketCtx.shadowColor = '#ffff00';
-                const trailGradient = rocketCtx.createLinearGradient(b.x - 20, b.y, b.x, b.y);
-                trailGradient.addColorStop(0, 'rgba(255, 255, 0, 0)');
-                trailGradient.addColorStop(1, 'rgba(255, 255, 0, 0.8)');
-                rocketCtx.fillStyle = trailGradient;
-                rocketCtx.fillRect(b.x - 20, b.y - 2, 20, 4);
-                
-                // Bullet
-                rocketCtx.fillStyle = '#ffff00';
-                rocketCtx.beginPath();
-                rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2);
-                rocketCtx.fill();
-            });
-            rocketCtx.restore();
-            
-            // Draw enemy bullets with glow
-            rocketCtx.save();
-            rocketEnemyBullets.forEach(b => {
-                rocketCtx.shadowBlur = 15;
-                rocketCtx.shadowColor = '#ff0000';
-                rocketCtx.fillStyle = '#ff3333';
-                rocketCtx.beginPath();
-                rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2);
-                rocketCtx.fill();
-            });
-            rocketCtx.restore();
-            
-            // Draw enemies
-            rocketCtx.save();
-            rocketEnemies.forEach(e => {
-                if (e.isBoss) {
-                    // Epic boss design
-                    rocketCtx.shadowBlur = 30;
-                    rocketCtx.shadowColor = '#ff00ff';
-                    
-                    // Boss main body
-                    const bossGradient = rocketCtx.createRadialGradient(
-                        e.x + e.width / 2, e.y + e.height / 2, 10,
-                        e.x + e.width / 2, e.y + e.height / 2, e.width / 2
-                    );
-                    bossGradient.addColorStop(0, '#ff00ff');
-                    bossGradient.addColorStop(1, '#8800ff');
-                    rocketCtx.fillStyle = bossGradient;
-                    
-                    rocketCtx.beginPath();
-                    rocketCtx.arc(e.x + e.width / 2, e.y + e.height / 2, e.width / 2, 0, Math.PI * 2);
-                    rocketCtx.fill();
-                    
-                    // Boss spikes
-                    rocketCtx.fillStyle = '#ff00ff';
-                    for (let i = 0; i < 8; i++) {
-                        const angle = (Math.PI * 2 * i) / 8;
-                        const x1 = e.x + e.width / 2 + Math.cos(angle) * (e.width / 2 - 5);
-                        const y1 = e.y + e.height / 2 + Math.sin(angle) * (e.height / 2 - 5);
-                        const x2 = e.x + e.width / 2 + Math.cos(angle) * (e.width / 2 + 15);
-                        const y2 = e.y + e.height / 2 + Math.sin(angle) * (e.height / 2 + 15);
-                        
-                        rocketCtx.beginPath();
-                        rocketCtx.moveTo(x1, y1);
-                        rocketCtx.lineTo(x2, y2);
-                        rocketCtx.lineWidth = 4;
-                        rocketCtx.strokeStyle = '#ff00ff';
-                        rocketCtx.stroke();
-                    }
-                    
-                    // Boss eyes
-                    rocketCtx.fillStyle = '#ffff00';
-                    rocketCtx.shadowBlur = 10;
-                    rocketCtx.shadowColor = '#ffff00';
-                    rocketCtx.beginPath();
-                    rocketCtx.arc(e.x + e.width / 2 - 15, e.y + e.height / 2, 8, 0, Math.PI * 2);
-                    rocketCtx.arc(e.x + e.width / 2 + 15, e.y + e.height / 2, 8, 0, Math.PI * 2);
-                    rocketCtx.fill();
-                    
-                    // Health bar
-                    rocketCtx.shadowBlur = 0;
-                    const barWidth = e.width + 20;
-                    const barX = e.x - 10;
-                    const barY = e.y - 25;
-                    
-                    rocketCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    rocketCtx.fillRect(barX, barY, barWidth, 12);
-                    
-                    rocketCtx.fillStyle = '#ff00ff';
-                    rocketCtx.fillRect(barX + 2, barY + 2, ((e.health / e.maxHealth) * (barWidth - 4)), 8);
-                    
-                    rocketCtx.strokeStyle = '#ffffff';
-                    rocketCtx.lineWidth = 2;
-                    rocketCtx.strokeRect(barX, barY, barWidth, 12);
-                    
-                    rocketCtx.fillStyle = '#ffffff';
-                    rocketCtx.font = 'bold 14px Arial';
-                    rocketCtx.textAlign = 'center';
-                    rocketCtx.fillText(`BOSS ${e.health}/${e.maxHealth}`, e.x + e.width / 2, barY - 5);
-                } else {
-                    // Regular enemy - alien design
-                    rocketCtx.shadowBlur = 15;
-                    rocketCtx.shadowColor = '#ff0000';
-                    
-                    const enemyGradient = rocketCtx.createRadialGradient(
-                        e.x + e.width / 2, e.y + e.height / 2, 5,
-                        e.x + e.width / 2, e.y + e.height / 2, e.width / 2
-                    );
-                    enemyGradient.addColorStop(0, '#ff6666');
-                    enemyGradient.addColorStop(1, '#ff0000');
-                    rocketCtx.fillStyle = enemyGradient;
-                    
-                    // Enemy body
-                    rocketCtx.beginPath();
-                    rocketCtx.moveTo(e.x + e.width, e.y + e.height / 2);
-                    rocketCtx.lineTo(e.x + e.width / 2, e.y);
-                    rocketCtx.lineTo(e.x, e.y + e.height / 2);
-                    rocketCtx.lineTo(e.x + e.width / 2, e.y + e.height);
-                    rocketCtx.closePath();
-                    rocketCtx.fill();
-                    
-                    // Enemy eye
-                    rocketCtx.shadowBlur = 8;
-                    rocketCtx.shadowColor = '#00ff00';
-                    rocketCtx.fillStyle = '#00ff00';
-                    rocketCtx.beginPath();
-                    rocketCtx.arc(e.x + e.width / 2, e.y + e.height / 2, 6, 0, Math.PI * 2);
-                    rocketCtx.fill();
-                }
-            });
-            rocketCtx.restore();
-            
-            // Draw countdown if active
-            if (rocketCountdownActive && rocketCountdown > 0) {
-                rocketCtx.save();
-                rocketCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
-                
-                rocketCtx.shadowBlur = 30;
-                rocketCtx.shadowColor = '#00ffff';
-                rocketCtx.fillStyle = '#00ffff';
-                rocketCtx.font = 'bold 120px Arial';
-                rocketCtx.textAlign = 'center';
-                rocketCtx.fillText(rocketCountdown, rocketCanvas.width / 2, rocketCanvas.height / 2 + 40);
-                
-                rocketCtx.shadowBlur = 0;
-                rocketCtx.fillStyle = '#ffffff';
-                rocketCtx.font = 'bold 30px Arial';
-                rocketCtx.fillText('VÅG ' + rocketWave, rocketCanvas.width / 2, rocketCanvas.height / 2 - 60);
-                rocketCtx.restore();
-            }
-        }
-
-        function updateRocketUI() {
-            document.getElementById('rocket-lives').textContent = rocketLives;
-            document.getElementById('rocket-wave').textContent = rocketWave;
-            document.getElementById('rocket-score').textContent = rocketScore;
-        }
-
-        function showRocketGlosQuestion() {
-            if (rocketGlosIndex >= rocketGlosData.length) {
-                rocketGlosIndex = 0;
-                rocketGlosData.sort(() => Math.random() - 0.5);
-            }
-
-            const glos = rocketGlosData[rocketGlosIndex];
-            const questionContainer = document.getElementById('rocket-question-container');
-            const wordElement = document.getElementById('rocket-glos-word');
-            const answerInput = document.getElementById('rocket-glos-answer');
-            
-            const mode = Math.random() < 0.5 ? 'svenska' : 'spanska';
-            wordElement.textContent = mode === 'svenska' ? glos.svenska : glos.spanska;
-            wordElement.dataset.mode = mode;
-            answerInput.value = '';
-            document.getElementById('rocket-glos-feedback').innerHTML = '';
-            
-            questionContainer.classList.remove('hidden');
-            answerInput.focus();
-            
-            answerInput.onkeypress = (e) => {
-                if (e.key === 'Enter') checkRocketGlosAnswer();
-            };
-        }
-
-        function checkRocketGlosAnswer() {
-            const glos = rocketGlosData[rocketGlosIndex];
-            const answer = document.getElementById('rocket-glos-answer').value.trim().toLowerCase();
-            const mode = document.getElementById('rocket-glos-word').dataset.mode;
-            const correctAnswer = (mode === 'svenska' ? glos.spanska : glos.svenska).toLowerCase();
-            const feedbackDiv = document.getElementById('rocket-glos-feedback');
-            
-            if (answer === correctAnswer) {
-                feedbackDiv.innerHTML = '<div class="feedback correct">✅ Rätt! Nästa våg startar!</div>';
-                setTimeout(() => {
-                    document.getElementById('rocket-question-container').classList.add('hidden');
-                    rocketGlosIndex++;
-                    rocketWave++;
-                    if (rocketWave > 4) rocketWave = 1; // Reset to wave 1 after boss
-                    updateRocketUI();
-                    
-                    // Clear old enemies and bullets
-                    rocketEnemies = [];
-                    rocketEnemyBullets = [];
-                    
-                    // Start countdown
-                    rocketCountdown = 3;
-                    rocketCountdownActive = true;
-                    rocketPaused = false;
-                    
-                    // Spawn enemies after countdown
-                    const countdownInterval = setInterval(() => {
-                        rocketCountdown--;
-                        if (rocketCountdown <= 0) {
-                            clearInterval(countdownInterval);
-                            rocketCountdownActive = false;
-                            spawnEnemyWave();
-                        }
-                    }, 1000);
-                }, 1500);
-            } else {
-                feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen!</div>';
-            }
-        }
-
-        function gameOverRocket() {
-            rocketGameRunning = false;
-            rocketPaused = true;
-            
-            if (rocketGameLoop) {
-                cancelAnimationFrame(rocketGameLoop);
-                rocketGameLoop = null;
-            }
-            
-            document.removeEventListener('keydown', handleRocketKeyDown);
-            document.removeEventListener('keyup', handleRocketKeyUp);
-            rocketKeys = {};
-            
-            alert(`Game Over! 💥\n\nDin slutpoäng: ${rocketScore}\nVågor klarade: ${rocketWave - 1}`);
-            goToMainMenu();
-        }
-
-        // === BLOCKBLAST ===
         function goToBlockBlast() {
             showScreen('screen-blockblast-input');
             const container = document.getElementById('blockblast-glos-container');
@@ -1580,7 +923,6 @@
                     cell.dataset.row = row;
                     cell.dataset.col = col;
                     
-                    // Drop events
                     cell.ondragover = (e) => {
                         e.preventDefault();
                         if (selectedPieceId !== null) {
@@ -1648,8 +990,8 @@
             pieceDiv.className = 'piece';
             pieceDiv.dataset.pieceId = id;
             pieceDiv.draggable = true;
-            pieceDiv.style.gridTemplateColumns = `repeat(${shape[0].length}, 30px)`;
-            pieceDiv.style.gridTemplateRows = `repeat(${shape.length}, 30px)`;
+            pieceDiv.style.gridTemplateColumns = `repeat(${shape[0].length}, 25px)`;
+            pieceDiv.style.gridTemplateRows = `repeat(${shape.length}, 25px)`;
             
             shape.forEach(row => {
                 row.forEach(cell => {
@@ -1659,7 +1001,6 @@
                 });
             });
             
-            // Drag events
             pieceDiv.ondragstart = (e) => {
                 if (currentPieces[id].used) {
                     e.preventDefault();
@@ -1782,10 +1123,9 @@
         }
 
         function showGlosQuestion() {
-            // Rotera genom glosorna - börja om när alla är genomgångna
             if (currentGlosIndex >= blockBlastGlosData.length) {
                 currentGlosIndex = 0;
-                blockBlastGlosData.sort(() => Math.random() - 0.5); // Blanda om för variation
+                blockBlastGlosData.sort(() => Math.random() - 0.5);
             }
 
             const glos = blockBlastGlosData[currentGlosIndex];
@@ -1824,7 +1164,681 @@
             }
         }
 
-        // === GLOSOR ===
+        function goToRocketShips() {
+            showScreen('screen-rocketships-input');
+            const container = document.getElementById('rocketships-glos-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 15; i++) {
+                addRocketShipsGlosRow();
+            }
+        }
+
+        function addRocketShipsGlosRow() {
+            const container = document.getElementById('rocketships-glos-container');
+            const row = document.createElement('div');
+            row.className = 'glos-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Svenskt ord" class="rs-glos-sv">
+                <input type="text" placeholder="Spanskt ord" class="rs-glos-es">
+                <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function startRocketShipsGame() {
+            rocketGlosData = [];
+            document.querySelectorAll('#rocketships-glos-container .glos-row').forEach(row => {
+                const sv = row.querySelector('.rs-glos-sv').value.trim();
+                const es = row.querySelector('.rs-glos-es').value.trim();
+                if (sv && es) {
+                    rocketGlosData.push({ svenska: sv, spanska: es });
+                }
+            });
+
+            if (rocketGlosData.length === 0) {
+                alert('Du måste lägga in minst en glos!');
+                return;
+            }
+
+            rocketGlosData.sort(() => Math.random() - 0.5);
+            rocketGlosIndex = 0;
+            initializeRocketGame();
+            showScreen('screen-rocketships');
+        }
+
+        function initializeRocketGame() {
+            rocketCanvas = document.getElementById('rocket-canvas');
+            rocketCtx = rocketCanvas.getContext('2d');
+            
+            rocketWave = 1;
+            rocketScore = 0;
+            rocketLives = 3;
+            rocketPaused = false;
+            rocketGameRunning = true;
+            rocketShootTimer = 0;
+            rocketKeys = {};
+            
+            rocketPlayer = {
+                x: 50,
+                y: rocketCanvas.height / 2,
+                width: 40,
+                height: 30,
+                speed: 5
+            };
+            
+            rocketBullets = [];
+            rocketEnemyBullets = [];
+            rocketEnemies = [];
+            
+            document.removeEventListener('keydown', handleRocketKeyDown);
+            document.removeEventListener('keyup', handleRocketKeyUp);
+            
+            document.addEventListener('keydown', handleRocketKeyDown);
+            document.addEventListener('keyup', handleRocketKeyUp);
+            
+            setupMobileControls();
+            
+            updateRocketUI();
+            
+            if (rocketGameLoop) {
+                cancelAnimationFrame(rocketGameLoop);
+            }
+            
+            rocketCountdown = 3;
+            rocketCountdownActive = true;
+            
+            const countdownInterval = setInterval(() => {
+                rocketCountdown--;
+                if (rocketCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                    rocketCountdownActive = false;
+                    spawnEnemyWave();
+                }
+            }, 1000);
+            
+            gameLoopRocket();
+        }
+
+        function setupMobileControls() {
+            const btnUp = document.getElementById('btn-up');
+            const btnDown = document.getElementById('btn-down');
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+            const btnPause = document.getElementById('btn-pause');
+            
+            btnUp.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                rocketKeys['w'] = true;
+            });
+            btnUp.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                rocketKeys['w'] = false;
+            });
+            
+            btnDown.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                rocketKeys['s'] = true;
+            });
+            btnDown.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                rocketKeys['s'] = false;
+            });
+            
+            btnLeft.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                rocketKeys['a'] = true;
+            });
+            btnLeft.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                rocketKeys['a'] = false;
+            });
+            
+            btnRight.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                rocketKeys['d'] = true;
+            });
+            btnRight.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                rocketKeys['d'] = false;
+            });
+            
+            btnPause.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                rocketPaused = !rocketPaused;
+            });
+            btnPause.addEventListener('click', (e) => {
+                e.preventDefault();
+                rocketPaused = !rocketPaused;
+            });
+        }
+
+        function removeMobileControls() {
+            const btns = ['btn-up', 'btn-down', 'btn-left', 'btn-right', 'btn-pause'];
+            btns.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                }
+            });
+        }
+
+        function handleRocketKeyDown(e) {
+            if (document.activeElement.tagName === 'INPUT') {
+                return;
+            }
+            
+            if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', ' '].includes(e.key.toLowerCase())) {
+                e.preventDefault();
+            }
+            
+            if (e.key === ' ') {
+                rocketPaused = !rocketPaused;
+                return;
+            }
+            
+            rocketKeys[e.key.toLowerCase()] = true;
+        }
+
+        function handleRocketKeyUp(e) {
+            if (document.activeElement.tagName === 'INPUT') {
+                return;
+            }
+            
+            rocketKeys[e.key.toLowerCase()] = false;
+        }
+
+        function spawnEnemyWave() {
+            rocketEnemies = [];
+            
+            if (rocketWave <= 3) {
+                const enemyCount = rocketWave * 5;
+                
+                for (let i = 0; i < enemyCount; i++) {
+                    rocketEnemies.push({
+                        x: rocketCanvas.width - 100 - Math.random() * 150,
+                        y: 50 + Math.random() * (rocketCanvas.height - 100),
+                        width: 35,
+                        height: 35,
+                        speed: 1 + Math.random() * 0.5,
+                        health: 1,
+                        shootTimer: Math.random() * 120,
+                        movePattern: Math.random() < 0.5 ? 'circle' : 'wave',
+                        angle: Math.random() * Math.PI * 2,
+                        centerX: rocketCanvas.width * 0.7,
+                        centerY: rocketCanvas.height / 2,
+                        radius: 80 + Math.random() * 50
+                    });
+                }
+            } else {
+                rocketEnemies.push({
+                    x: rocketCanvas.width - 150,
+                    y: rocketCanvas.height / 2 - 50,
+                    width: 80,
+                    height: 80,
+                    speed: 1,
+                    health: 10,
+                    maxHealth: 10,
+                    isBoss: true,
+                    shootTimer: 0,
+                    angle: 0,
+                    centerX: rocketCanvas.width * 0.7,
+                    centerY: rocketCanvas.height / 2,
+                    radius: 60
+                });
+            }
+        }
+
+        function gameLoopRocket() {
+            if (!rocketGameRunning) return;
+            
+            if (!rocketPaused) {
+                updateRocket();
+                drawRocket();
+            } else {
+                rocketCtx.fillStyle = 'rgba(0,0,0,0.5)';
+                rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
+                rocketCtx.fillStyle = 'white';
+                rocketCtx.font = '40px Arial';
+                rocketCtx.textAlign = 'center';
+                rocketCtx.fillText('PAUSAD', rocketCanvas.width / 2, rocketCanvas.height / 2);
+                rocketCtx.font = '20px Arial';
+                rocketCtx.fillText('Tryck SPACE/PAUSA', rocketCanvas.width / 2, rocketCanvas.height / 2 + 40);
+            }
+            
+            rocketGameLoop = requestAnimationFrame(gameLoopRocket);
+        }
+
+        function updateRocket() {
+            if (rocketKeys['w'] || rocketKeys['arrowup']) rocketPlayer.y -= rocketPlayer.speed;
+            if (rocketKeys['s'] || rocketKeys['arrowdown']) rocketPlayer.y += rocketPlayer.speed;
+            if (rocketKeys['a'] || rocketKeys['arrowleft']) rocketPlayer.x -= rocketPlayer.speed;
+            if (rocketKeys['d'] || rocketKeys['arrowright']) rocketPlayer.x += rocketPlayer.speed;
+            
+            rocketPlayer.x = Math.max(0, Math.min(rocketCanvas.width - rocketPlayer.width, rocketPlayer.x));
+            rocketPlayer.y = Math.max(0, Math.min(rocketCanvas.height - rocketPlayer.height, rocketPlayer.y));
+            
+            if (rocketCountdownActive) return;
+            
+            rocketShootTimer++;
+            if (rocketShootTimer >= 60) {
+                rocketBullets.push({
+                    x: rocketPlayer.x + rocketPlayer.width,
+                    y: rocketPlayer.y + rocketPlayer.height / 2,
+                    width: 10,
+                    height: 4,
+                    speed: 8
+                });
+                rocketShootTimer = 0;
+            }
+            
+            rocketBullets.forEach(b => b.x += b.speed);
+            rocketBullets = rocketBullets.filter(b => b.x < rocketCanvas.width);
+            
+            rocketEnemyBullets.forEach(b => {
+                b.x += b.speedX;
+                b.y += b.speedY;
+            });
+            rocketEnemyBullets = rocketEnemyBullets.filter(b => 
+                b.x > -20 && b.x < rocketCanvas.width + 20 && 
+                b.y > -20 && b.y < rocketCanvas.height + 20
+            );
+            
+            rocketEnemies.forEach(e => {
+                if (e.isBoss) {
+                    e.angle += 0.02;
+                    e.x = e.centerX + Math.cos(e.angle) * e.radius;
+                    e.y = e.centerY + Math.sin(e.angle) * e.radius;
+                } else {
+                    if (e.movePattern === 'circle') {
+                        e.angle += 0.03 * e.speed;
+                        e.x = e.centerX + Math.cos(e.angle) * e.radius;
+                        e.y = e.centerY + Math.sin(e.angle) * e.radius;
+                    } else {
+                        e.angle += 0.05 * e.speed;
+                        e.y = e.centerY + Math.sin(e.angle) * 60;
+                        e.x = e.centerX + Math.cos(e.angle * 0.5) * 40;
+                    }
+                }
+                
+                e.x = Math.max(rocketCanvas.width * 0.4, Math.min(rocketCanvas.width - e.width - 20, e.x));
+                e.y = Math.max(20, Math.min(rocketCanvas.height - e.height - 20, e.y));
+                
+                e.shootTimer++;
+                const shootInterval = e.isBoss ? 30 : 90;
+                if (e.shootTimer >= shootInterval) {
+                    const dx = rocketPlayer.x - e.x;
+                    const dy = rocketPlayer.y - e.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const bulletSpeed = 3;
+                    
+                    rocketEnemyBullets.push({
+                        x: e.x,
+                        y: e.y + e.height / 2,
+                        width: 8,
+                        height: 8,
+                        speedX: (dx / distance) * bulletSpeed,
+                        speedY: (dy / distance) * bulletSpeed
+                    });
+                    e.shootTimer = 0;
+                }
+            });
+            
+            rocketBullets.forEach((b, bIndex) => {
+                rocketEnemies.forEach((e, eIndex) => {
+                    if (b.x < e.x + e.width && b.x + b.width > e.x &&
+                        b.y < e.y + e.height && b.y + b.height > e.y) {
+                        rocketBullets.splice(bIndex, 1);
+                        e.health--;
+                        if (e.health <= 0) {
+                            rocketEnemies.splice(eIndex, 1);
+                            rocketScore += e.isBoss ? 50 : 10;
+                            updateRocketUI();
+                        }
+                    }
+                });
+            });
+            
+            rocketEnemyBullets.forEach((b, bIndex) => {
+                if (b.x < rocketPlayer.x + rocketPlayer.width && b.x + b.width > rocketPlayer.x &&
+                    b.y < rocketPlayer.y + rocketPlayer.height && b.y + b.height > rocketPlayer.y) {
+                    rocketEnemyBullets.splice(bIndex, 1);
+                    rocketLives--;
+                    updateRocketUI();
+                    if (rocketLives <= 0) {
+                        gameOverRocket();
+                    }
+                }
+            });
+            
+            if (rocketEnemies.length === 0) {
+                rocketPaused = true;
+                showRocketGlosQuestion();
+            }
+        }
+
+        function drawRocket() {
+            rocketCtx.fillStyle = '#0a0a1a';
+            rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
+            
+            rocketCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            const time = Date.now() * 0.0001;
+            for (let i = 0; i < 100; i++) {
+                const x = ((i * 123 + time * 50) % rocketCanvas.width);
+                const y = (i * 456 % rocketCanvas.height);
+                const size = (i % 3) + 1;
+                rocketCtx.fillRect(x, y, size, size);
+            }
+            
+            rocketCtx.save();
+            rocketCtx.shadowBlur = 20;
+            rocketCtx.shadowColor = '#00ffff';
+            
+            const gradient = rocketCtx.createLinearGradient(rocketPlayer.x, rocketPlayer.y, rocketPlayer.x + rocketPlayer.width, rocketPlayer.y);
+            gradient.addColorStop(0, '#00ccff');
+            gradient.addColorStop(1, '#00ffff');
+            rocketCtx.fillStyle = gradient;
+            
+            rocketCtx.beginPath();
+            rocketCtx.moveTo(rocketPlayer.x, rocketPlayer.y + rocketPlayer.height / 2);
+            rocketCtx.lineTo(rocketPlayer.x + 10, rocketPlayer.y + 5);
+            rocketCtx.lineTo(rocketPlayer.x + rocketPlayer.width - 5, rocketPlayer.y);
+            rocketCtx.lineTo(rocketPlayer.x + rocketPlayer.width, rocketPlayer.y + rocketPlayer.height / 2);
+            rocketCtx.lineTo(rocketPlayer.x + rocketPlayer.width - 5, rocketPlayer.y + rocketPlayer.height);
+            rocketCtx.lineTo(rocketPlayer.x + 10, rocketPlayer.y + rocketPlayer.height - 5);
+            rocketCtx.closePath();
+            rocketCtx.fill();
+            
+            rocketCtx.restore();
+            
+            rocketCtx.save();
+            rocketBullets.forEach(b => {
+                rocketCtx.shadowBlur = 15;
+                rocketCtx.shadowColor = '#ffff00';
+                rocketCtx.fillStyle = '#ffff00';
+                rocketCtx.beginPath();
+                rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+                rocketCtx.fill();
+            });
+            rocketCtx.restore();
+            
+            rocketCtx.save();
+            rocketEnemyBullets.forEach(b => {
+                rocketCtx.shadowBlur = 15;
+                rocketCtx.shadowColor = '#ff0000';
+                rocketCtx.fillStyle = '#ff3333';
+                rocketCtx.beginPath();
+                rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+                rocketCtx.fill();
+            });
+            rocketCtx.restore();
+            
+            rocketCtx.save();
+            rocketEnemies.forEach(e => {
+                if (e.isBoss) {
+                    rocketCtx.shadowBlur = 30;
+                    rocketCtx.shadowColor = '#ff00ff';
+                    
+                    const bossGradient = rocketCtx.createRadialGradient(
+                        e.x + e.width / 2, e.y + e.height / 2, 10,
+                        e.x + e.width / 2, e.y + e.height / 2, e.width / 2
+                    );
+                    bossGradient.addColorStop(0, '#ff00ff');
+                    bossGradient.addColorStop(1, '#8800ff');
+                    rocketCtx.fillStyle = bossGradient;
+                    
+                    rocketCtx.beginPath();
+                    rocketCtx.arc(e.x + e.width / 2, e.y + e.height / 2, e.width / 2, 0, Math.PI * 2);
+                    rocketCtx.fill();
+                } else {
+                    rocketCtx.shadowBlur = 15;
+                    rocketCtx.shadowColor = '#ff0000';
+                    
+                    const enemyGradient = rocketCtx.createRadialGradient(
+                        e.x + e.width / 2, e.y + e.height / 2, 5,
+                        e.x + e.width / 2, e.y + e.height / 2, e.width / 2
+                    );
+                    enemyGradient.addColorStop(0, '#ff6666');
+                    enemyGradient.addColorStop(1, '#ff0000');
+                    rocketCtx.fillStyle = enemyGradient;
+                    
+                    rocketCtx.beginPath();
+                    rocketCtx.moveTo(e.x + e.width, e.y + e.height / 2);
+                    rocketCtx.lineTo(e.x + e.width / 2, e.y);
+                    rocketCtx.lineTo(e.x, e.y + e.height / 2);
+                    rocketCtx.lineTo(e.x + e.width / 2, e.y + e.height);
+                    rocketCtx.closePath();
+                    rocketCtx.fill();
+                }
+            });
+            rocketCtx.restore();
+            
+            if (rocketCountdownActive && rocketCountdown > 0) {
+                rocketCtx.save();
+                rocketCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
+                
+                rocketCtx.shadowBlur = 30;
+                rocketCtx.shadowColor = '#00ffff';
+                rocketCtx.fillStyle = '#00ffff';
+                rocketCtx.font = 'bold 120px Arial';
+                rocketCtx.textAlign = 'center';
+                rocketCtx.fillText(rocketCountdown, rocketCanvas.width / 2, rocketCanvas.height / 2 + 40);
+                
+                rocketCtx.shadowBlur = 0;
+                rocketCtx.fillStyle = '#ffffff';
+                rocketCtx.font = 'bold 30px Arial';
+                rocketCtx.fillText('VÅG ' + rocketWave, rocketCanvas.width / 2, rocketCanvas.height / 2 - 60);
+                rocketCtx.restore();
+            }
+        }
+
+        function updateRocketUI() {
+            document.getElementById('rocket-lives').textContent = rocketLives;
+            document.getElementById('rocket-wave').textContent = rocketWave;
+            document.getElementById('rocket-score').textContent = rocketScore;
+        }
+
+        function showRocketGlosQuestion() {
+            if (rocketGlosIndex >= rocketGlosData.length) {
+                rocketGlosIndex = 0;
+                rocketGlosData.sort(() => Math.random() - 0.5);
+            }
+
+            const glos = rocketGlosData[rocketGlosIndex];
+            const questionContainer = document.getElementById('rocket-question-container');
+            const wordElement = document.getElementById('rocket-glos-word');
+            const answerInput = document.getElementById('rocket-glos-answer');
+            
+            const mode = Math.random() < 0.5 ? 'svenska' : 'spanska';
+            wordElement.textContent = mode === 'svenska' ? glos.svenska : glos.spanska;
+            wordElement.dataset.mode = mode;
+            answerInput.value = '';
+            document.getElementById('rocket-glos-feedback').innerHTML = '';
+            
+            questionContainer.classList.remove('hidden');
+            answerInput.focus();
+            
+            answerInput.onkeypress = (e) => {
+                if (e.key === 'Enter') checkRocketGlosAnswer();
+            };
+        }
+
+        function checkRocketGlosAnswer() {
+            const glos = rocketGlosData[rocketGlosIndex];
+            const answer = document.getElementById('rocket-glos-answer').value.trim().toLowerCase();
+            const mode = document.getElementById('rocket-glos-word').dataset.mode;
+            const correctAnswer = (mode === 'svenska' ? glos.spanska : glos.svenska).toLowerCase();
+            const feedbackDiv = document.getElementById('rocket-glos-feedback');
+            
+            if (answer === correctAnswer) {
+                feedbackDiv.innerHTML = '<div class="feedback correct">✅ Rätt! Nästa våg startar!</div>';
+                setTimeout(() => {
+                    document.getElementById('rocket-question-container').classList.add('hidden');
+                    rocketGlosIndex++;
+                    rocketWave++;
+                    if (rocketWave > 4) rocketWave = 1;
+                    updateRocketUI();
+                    
+                    rocketEnemies = [];
+                    rocketEnemyBullets = [];
+                    
+                    rocketCountdown = 3;
+                    rocketCountdownActive = true;
+                    rocketPaused = false;
+                    
+                    const countdownInterval = setInterval(() => {
+                        rocketCountdown--;
+                        if (rocketCountdown <= 0) {
+                            clearInterval(countdownInterval);
+                            rocketCountdownActive = false;
+                            spawnEnemyWave();
+                        }
+                    }, 1000);
+                }, 1500);
+            } else {
+                feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen!</div>';
+            }
+        }
+
+        function gameOverRocket() {
+            rocketGameRunning = false;
+            rocketPaused = true;
+            
+            if (rocketGameLoop) {
+                cancelAnimationFrame(rocketGameLoop);
+                rocketGameLoop = null;
+            }
+            
+            document.removeEventListener('keydown', handleRocketKeyDown);
+            document.removeEventListener('keyup', handleRocketKeyUp);
+            removeMobileControls();
+            rocketKeys = {};
+            
+            alert(`Game Over! 💥\n\nDin slutpoäng: ${rocketScore}\nVågor klarade: ${rocketWave - 1}`);
+            goToMainMenu();
+        }
+
+        function goToFlipCards() {
+            showScreen('screen-flipcards-input');
+            const container = document.getElementById('flipcards-glos-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 20; i++) {
+                addFlipCardsGlosRow();
+            }
+        }
+
+        function addFlipCardsGlosRow() {
+            const container = document.getElementById('flipcards-glos-container');
+            const row = document.createElement('div');
+            row.className = 'glos-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Svenskt ord" class="fc-glos-sv">
+                <input type="text" placeholder="Spanskt ord" class="fc-glos-es">
+                <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function startFlipCardsGame() {
+            flipCardsData = [];
+            document.querySelectorAll('#flipcards-glos-container .glos-row').forEach(row => {
+                const sv = row.querySelector('.fc-glos-sv').value.trim();
+                const es = row.querySelector('.fc-glos-es').value.trim();
+                if (sv && es) {
+                    flipCardsData.push({ svenska: sv, spanska: es });
+                }
+            });
+
+            if (flipCardsData.length === 0) {
+                alert('Du måste lägga in minst en glos!');
+                return;
+            }
+
+            flipCardsOriginalData = [...flipCardsData];
+            flipCardsData.sort(() => Math.random() - 0.5);
+            flipCardsCurrent = 0;
+            flipCardsKnown = [];
+            flipCardsUnknown = [];
+            
+            showScreen('screen-flipcards');
+            document.getElementById('flipcard-complete').classList.add('hidden');
+            displayFlipCard();
+        }
+
+        function displayFlipCard() {
+            if (flipCardsCurrent >= flipCardsData.length) {
+                showFlipCardComplete();
+                return;
+            }
+
+            const card = flipCardsData[flipCardsCurrent];
+            flipCardsIsFlipped = false;
+            
+            document.getElementById('flipcard-inner').classList.remove('flipped');
+            document.getElementById('flipcard-front-text').textContent = card.svenska;
+            document.getElementById('flipcard-back-text').textContent = card.spanska;
+            document.getElementById('flipcard-current').textContent = flipCardsCurrent + 1;
+            document.getElementById('flipcard-total').textContent = flipCardsData.length;
+        }
+
+        function flipCard() {
+            flipCardsIsFlipped = !flipCardsIsFlipped;
+            const inner = document.getElementById('flipcard-inner');
+            if (flipCardsIsFlipped) {
+                inner.classList.add('flipped');
+            } else {
+                inner.classList.remove('flipped');
+            }
+        }
+
+        function markCard(status) {
+            const card = flipCardsData[flipCardsCurrent];
+            
+            if (status === 'known') {
+                flipCardsKnown.push(card);
+            } else {
+                flipCardsUnknown.push(card);
+            }
+            
+            nextCard();
+        }
+
+        function nextCard() {
+            flipCardsCurrent++;
+            displayFlipCard();
+        }
+
+        function showFlipCardComplete() {
+            document.getElementById('flipcard').style.display = 'none';
+            document.querySelector('#screen-flipcards .button-group:not(#flipcard-buttons)').style.display = 'none';
+            document.getElementById('flipcard-complete').classList.remove('hidden');
+            document.getElementById('flipcard-known-count').textContent = flipCardsKnown.length;
+            document.getElementById('flipcard-unknown-count').textContent = flipCardsUnknown.length;
+        }
+
+        function restartFlipCards(mode) {
+            if (mode === 'mistakes') {
+                if (flipCardsUnknown.length === 0) {
+                    alert('Inga misstag att öva på! Du kunde alla! 🎉');
+                    return;
+                }
+                flipCardsData = [...flipCardsUnknown];
+            } else {
+                flipCardsData = [...flipCardsOriginalData];
+            }
+            
+            flipCardsData.sort(() => Math.random() - 0.5);
+            flipCardsCurrent = 0;
+            flipCardsKnown = [];
+            flipCardsUnknown = [];
+            
+            document.getElementById('flipcard').style.display = 'block';
+            document.querySelector('#screen-flipcards .button-group:not(#flipcard-buttons)').style.display = 'flex';
+            document.getElementById('flipcard-complete').classList.add('hidden');
+            displayFlipCard();
+        }
+
         function initializeGlosInput() {
             const container = document.getElementById('glos-container');
             container.innerHTML = '';
@@ -1877,7 +1891,6 @@
             displayQuestion();
         }
 
-        // === VERB ===
         function initializeVerbInput() {
             const container = document.getElementById('verb-container');
             container.innerHTML = '';
@@ -1947,7 +1960,6 @@
             displayQuestion();
         }
 
-        // === TEST ===
         function displayQuestion() {
             if (currentIndex >= currentWords.length) {
                 showResults();
@@ -2062,7 +2074,7 @@
                         }, 3000);
                     } else {
                         if (newlyCorrect > 0) {
-                            feedbackDiv.innerHTML = `<div class="feedback correct">✅ ${newlyCorrect} nya rätt! Totalt ${totalCorrect}/6. Försök igen med resten!</div>`;
+                            feedbackDiv.innerHTML = `<div class="feedback correct">✅ ${newlyCorrect} nya rätt! Totalt ${totalCorrect}/6. Försök igen!</div>`;
                         } else {
                             feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Inga nya rätt. ${totalCorrect}/6 klara. Försök igen!</div>`;
                         }
@@ -2092,4 +2104,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
