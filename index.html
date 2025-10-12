@@ -777,6 +777,7 @@
         let blockBlastGlosData = [];
         let currentGlosIndex = 0;
         let glosMode = 'svenska';
+        let blockBlastGlosAttempts = 0;
 
         let rocketCanvas, rocketCtx;
         let rocketPlayer, rocketEnemies, rocketBullets, rocketEnemyBullets;
@@ -792,6 +793,8 @@
         let rocketGameRunning = false;
         let rocketCountdown = 0;
         let rocketCountdownActive = false;
+        let rocketGlosAttempts = 0;
+        let rocketBonusEnemies = 0;
 
         let flipCardsData = [];
         let flipCardsOriginalData = [];
@@ -975,7 +978,10 @@
             const container = document.getElementById('pieces-container');
             container.innerHTML = '';
             
-            for (let i = 0; i < 4; i++) {
+            // Antal bitar: 4 normalt, 3 om straff från fel svar
+            const numPieces = (blockBlastGlosAttempts >= 2) ? 3 : 4;
+            
+            for (let i = 0; i < numPieces; i++) {
                 const shape = pieceShapes[Math.floor(Math.random() * pieceShapes.length)];
                 currentPieces.push({ shape, used: false, id: i });
                 renderPiece(shape, i);
@@ -1063,7 +1069,9 @@
                 selectedPieceId = null;
                 document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
                 
-                if (usedPieces === 4) {
+                // Kolla om alla bitar är använda
+                const totalPieces = currentPieces.length; // 3 eller 4
+                if (usedPieces === totalPieces) {
                     showGlosQuestion();
                 }
             }
@@ -1119,7 +1127,8 @@
         }
 
         function updatePiecesLeft() {
-            document.getElementById('pieces-left').textContent = 4 - usedPieces;
+            const totalPieces = currentPieces.length;
+            document.getElementById('pieces-left').textContent = totalPieces - usedPieces;
         }
 
         function showGlosQuestion() {
@@ -1138,6 +1147,9 @@
             answerInput.value = '';
             document.getElementById('glos-feedback').innerHTML = '';
             
+            // Reset attempts
+            blockBlastGlosAttempts = 0;
+            
             questionContainer.classList.remove('hidden');
             answerInput.focus();
             
@@ -1152,6 +1164,8 @@
             const correctAnswer = (glosMode === 'svenska' ? glos.spanska : glos.svenska).toLowerCase();
             const feedbackDiv = document.getElementById('glos-feedback');
             
+            blockBlastGlosAttempts++;
+            
             if (answer === correctAnswer) {
                 feedbackDiv.innerHTML = '<div class="feedback correct">✅ Rätt! Du får nya bitar!</div>';
                 setTimeout(() => {
@@ -1159,8 +1173,16 @@
                     currentGlosIndex++;
                     generateNewPieces();
                 }, 1500);
+            } else if (blockBlastGlosAttempts >= 2) {
+                // Efter 2 fel svar - visa rätt svar och ge straff (3 bitar istället för 4)
+                feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel 2 gånger! Rätt svar: ${correctAnswer}<br><strong>⚠️ Straff: Bara 3 bitar nästa runda!</strong></div>`;
+                setTimeout(() => {
+                    document.getElementById('glos-question-container').classList.add('hidden');
+                    currentGlosIndex++;
+                    generateNewPieces(); // Kommer generera 3 bitar istället för 4
+                }, 2500);
             } else {
-                feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen!</div>';
+                feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen! (1 försök kvar)</div>';
             }
         }
 
@@ -1217,6 +1239,8 @@
             rocketGameRunning = true;
             rocketShootTimer = 0;
             rocketKeys = {};
+            rocketGlosAttempts = 0;
+            rocketBonusEnemies = 0;
             
             rocketPlayer = {
                 x: 50,
@@ -1352,7 +1376,8 @@
             rocketEnemies = [];
             
             if (rocketWave <= 3) {
-                const enemyCount = rocketWave * 5;
+                const baseEnemyCount = rocketWave * 5;
+                const enemyCount = baseEnemyCount + rocketBonusEnemies;
                 
                 for (let i = 0; i < enemyCount; i++) {
                     rocketEnemies.push({
@@ -1371,6 +1396,7 @@
                     });
                 }
             } else {
+                // Boss wave (wave 4+)
                 rocketEnemies.push({
                     x: rocketCanvas.width - 150,
                     y: rocketCanvas.height / 2 - 50,
@@ -1387,6 +1413,9 @@
                     radius: 60
                 });
             }
+            
+            // Reset bonus enemies efter spawning
+            rocketBonusEnemies = 0;
         }
 
         function gameLoopRocket() {
@@ -1656,6 +1685,9 @@
             answerInput.value = '';
             document.getElementById('rocket-glos-feedback').innerHTML = '';
             
+            // Reset attempts counter för nytt ord
+            rocketGlosAttempts = 0;
+            
             questionContainer.classList.remove('hidden');
             answerInput.focus();
             
@@ -1671,17 +1703,24 @@
             const correctAnswer = (mode === 'svenska' ? glos.spanska : glos.svenska).toLowerCase();
             const feedbackDiv = document.getElementById('rocket-glos-feedback');
             
+            rocketGlosAttempts++;
+            
             if (answer === correctAnswer) {
                 feedbackDiv.innerHTML = '<div class="feedback correct">✅ Rätt! Nästa våg startar!</div>';
                 setTimeout(() => {
                     document.getElementById('rocket-question-container').classList.add('hidden');
                     rocketGlosIndex++;
                     rocketWave++;
-                    if (rocketWave > 4) rocketWave = 1;
+                    
+                    if (rocketWave > 4) {
+                        rocketWave = 1;
+                    }
+                    
                     updateRocketUI();
                     
                     rocketEnemies = [];
                     rocketEnemyBullets = [];
+                    rocketKeys = {};
                     
                     rocketCountdown = 3;
                     rocketCountdownActive = true;
@@ -1696,8 +1735,40 @@
                         }
                     }, 1000);
                 }, 1500);
+            } else if (rocketGlosAttempts >= 2) {
+                // Efter 2 fel svar - tvinga nästa våg MED straff (+1 extra fiende)
+                rocketBonusEnemies = 1;
+                feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel 2 gånger! Rätt svar: ${correctAnswer}<br><strong>⚠️ Straff: +1 extra fiende nästa våg!</strong></div>`;
+                setTimeout(() => {
+                    document.getElementById('rocket-question-container').classList.add('hidden');
+                    rocketGlosIndex++;
+                    rocketWave++;
+                    
+                    if (rocketWave > 4) {
+                        rocketWave = 1;
+                    }
+                    
+                    updateRocketUI();
+                    
+                    rocketEnemies = [];
+                    rocketEnemyBullets = [];
+                    rocketKeys = {};
+                    
+                    rocketCountdown = 3;
+                    rocketCountdownActive = true;
+                    rocketPaused = false;
+                    
+                    const countdownInterval = setInterval(() => {
+                        rocketCountdown--;
+                        if (rocketCountdown <= 0) {
+                            clearInterval(countdownInterval);
+                            rocketCountdownActive = false;
+                            spawnEnemyWave();
+                        }
+                    }, 1000);
+                }, 2500);
             } else {
-                feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen!</div>';
+                feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen! (1 försök kvar)</div>';
             }
         }
 
