@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Glostest – Spanska/Svenska</title>
+    <title>Öva glosor</title>
     <style>
         * {
             margin: 0;
@@ -523,7 +523,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🇪🇸 Glostest – Spanska/Svenska</h1>
+        <h1>Öva glosor</h1>
         
         <div id="screen-main-menu">
             <h2>Välj vad du vill göra:</h2>
@@ -553,7 +553,7 @@
             </div>
             <div class="header-row">
                 <div>Svenska</div>
-                <div>Spanska</div>
+                <div>Annat språk</div>
                 <div></div>
             </div>
             <div class="glos-input-container" id="blockblast-glos-container"></div>
@@ -601,7 +601,7 @@
             </div>
             <div class="header-row">
                 <div>Svenska</div>
-                <div>Spanska</div>
+                <div>Annat språk</div>
                 <div></div>
             </div>
             <div class="glos-input-container" id="rocketships-glos-container"></div>
@@ -660,7 +660,7 @@
             </div>
             <div class="header-row">
                 <div>Svenska</div>
-                <div>Spanska</div>
+                <div>Annat språk</div>
                 <div></div>
             </div>
             <div class="glos-input-container" id="flipcards-glos-container"></div>
@@ -723,7 +723,7 @@
             </div>
             <div class="header-row">
                 <div>Svenska</div>
-                <div>Spanska</div>
+                <div>Annat språk</div>
                 <div></div>
             </div>
             <div class="glos-input-container" id="glos-container"></div>
@@ -737,8 +737,8 @@
         <div id="screen-glos-direction" class="hidden">
             <h2>Välj språkläge:</h2>
             <div class="button-group">
-                <button onclick="startGlosTest('svenska')">Svenska → Spanska</button>
-                <button onclick="startGlosTest('spanska')">Spanska → Svenska</button>
+                <button onclick="startGlosTest('svenska')">Svenska → Annat språk</button>
+                <button onclick="startGlosTest('spanska')">Annat språk → Svenska</button>
                 <button onclick="goBack('screen-input-glosor')">Tillbaka</button>
             </div>
         </div>
@@ -763,7 +763,8 @@
             <div class="word-panel" id="question"></div>
             <div id="answer-area"></div>
             <div class="button-group">
-                <button onclick="checkAnswer()">Svara</button>
+                <button onclick="checkAnswer()" id="btn-check">Svara</button>
+                <button onclick="nextWord()" id="btn-next" class="hidden" style="background: #28a745;">Nästa →</button>
             </div>
             <div id="feedback"></div>
         </div>
@@ -793,6 +794,7 @@
         let wrong = 0;
         let attemptsLeft = 2;
         let correctFlags = [];
+        let waitingForNext = false; // NEW: tracks if we're waiting for user to click Nästa
 
         let gameGrid = [];
         let gameScore = 0;
@@ -903,7 +905,7 @@
             row.className = 'glos-row';
             row.innerHTML = `
                 <input type="text" placeholder="Svenskt ord" class="bb-glos-sv">
-                <input type="text" placeholder="Spanskt ord" class="bb-glos-es">
+                <input type="text" placeholder="Annat språk" class="bb-glos-es">
                 <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
             `;
             container.appendChild(row);
@@ -1003,7 +1005,6 @@
             const container = document.getElementById('pieces-container');
             container.innerHTML = '';
             
-            // Antal bitar: 4 normalt, 3 om straff från fel svar
             const numPieces = (blockBlastGlosAttempts >= 2) ? 3 : 4;
             
             for (let i = 0; i < numPieces; i++) {
@@ -1094,8 +1095,7 @@
                 selectedPieceId = null;
                 document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
                 
-                // Kolla om alla bitar är använda
-                const totalPieces = currentPieces.length; // 3 eller 4
+                const totalPieces = currentPieces.length;
                 if (usedPieces === totalPieces) {
                     showGlosQuestion();
                 }
@@ -1172,7 +1172,6 @@
             answerInput.value = '';
             document.getElementById('glos-feedback').innerHTML = '';
             
-            // Reset attempts
             blockBlastGlosAttempts = 0;
             
             questionContainer.classList.remove('hidden');
@@ -1199,12 +1198,11 @@
                     generateNewPieces();
                 }, 1500);
             } else if (blockBlastGlosAttempts >= 2) {
-                // Efter 2 fel svar - visa rätt svar och ge straff (3 bitar istället för 4)
                 feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel 2 gånger! Rätt svar: ${correctAnswer}<br><strong>⚠️ Straff: Bara 3 bitar nästa runda!</strong></div>`;
                 setTimeout(() => {
                     document.getElementById('glos-question-container').classList.add('hidden');
                     currentGlosIndex++;
-                    generateNewPieces(); // Kommer generera 3 bitar istället för 4
+                    generateNewPieces();
                 }, 2500);
             } else {
                 feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen! (1 försök kvar)</div>';
@@ -1226,7 +1224,7 @@
             row.className = 'glos-row';
             row.innerHTML = `
                 <input type="text" placeholder="Svenskt ord" class="rs-glos-sv">
-                <input type="text" placeholder="Spanskt ord" class="rs-glos-es">
+                <input type="text" placeholder="Annat språk" class="rs-glos-es">
                 <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
             `;
             container.appendChild(row);
@@ -1315,50 +1313,16 @@
             const btnRight = document.getElementById('btn-right');
             const btnPause = document.getElementById('btn-pause');
             
-            btnUp.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                rocketKeys['w'] = true;
-            });
-            btnUp.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                rocketKeys['w'] = false;
-            });
-            
-            btnDown.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                rocketKeys['s'] = true;
-            });
-            btnDown.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                rocketKeys['s'] = false;
-            });
-            
-            btnLeft.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                rocketKeys['a'] = true;
-            });
-            btnLeft.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                rocketKeys['a'] = false;
-            });
-            
-            btnRight.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                rocketKeys['d'] = true;
-            });
-            btnRight.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                rocketKeys['d'] = false;
-            });
-            
-            btnPause.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                rocketPaused = !rocketPaused;
-            });
-            btnPause.addEventListener('click', (e) => {
-                e.preventDefault();
-                rocketPaused = !rocketPaused;
-            });
+            btnUp.addEventListener('touchstart', (e) => { e.preventDefault(); rocketKeys['w'] = true; });
+            btnUp.addEventListener('touchend', (e) => { e.preventDefault(); rocketKeys['w'] = false; });
+            btnDown.addEventListener('touchstart', (e) => { e.preventDefault(); rocketKeys['s'] = true; });
+            btnDown.addEventListener('touchend', (e) => { e.preventDefault(); rocketKeys['s'] = false; });
+            btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); rocketKeys['a'] = true; });
+            btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); rocketKeys['a'] = false; });
+            btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); rocketKeys['d'] = true; });
+            btnRight.addEventListener('touchend', (e) => { e.preventDefault(); rocketKeys['d'] = false; });
+            btnPause.addEventListener('touchstart', (e) => { e.preventDefault(); rocketPaused = !rocketPaused; });
+            btnPause.addEventListener('click', (e) => { e.preventDefault(); rocketPaused = !rocketPaused; });
         }
 
         function removeMobileControls() {
@@ -1373,27 +1337,16 @@
         }
 
         function handleRocketKeyDown(e) {
-            if (document.activeElement.tagName === 'INPUT') {
-                return;
-            }
-            
+            if (document.activeElement.tagName === 'INPUT') return;
             if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', ' '].includes(e.key.toLowerCase())) {
                 e.preventDefault();
             }
-            
-            if (e.key === ' ') {
-                rocketPaused = !rocketPaused;
-                return;
-            }
-            
+            if (e.key === ' ') { rocketPaused = !rocketPaused; return; }
             rocketKeys[e.key.toLowerCase()] = true;
         }
 
         function handleRocketKeyUp(e) {
-            if (document.activeElement.tagName === 'INPUT') {
-                return;
-            }
-            
+            if (document.activeElement.tagName === 'INPUT') return;
             rocketKeys[e.key.toLowerCase()] = false;
         }
 
@@ -1408,8 +1361,7 @@
                     rocketEnemies.push({
                         x: rocketCanvas.width - 100 - Math.random() * 150,
                         y: 50 + Math.random() * (rocketCanvas.height - 100),
-                        width: 35,
-                        height: 35,
+                        width: 35, height: 35,
                         speed: 1 + Math.random() * 0.5,
                         health: 1,
                         shootTimer: Math.random() * 120,
@@ -1421,17 +1373,12 @@
                     });
                 }
             } else {
-                // Boss wave (wave 4+)
                 rocketEnemies.push({
                     x: rocketCanvas.width - 150,
                     y: rocketCanvas.height / 2 - 50,
-                    width: 80,
-                    height: 80,
-                    speed: 1,
-                    health: 10,
-                    maxHealth: 10,
-                    isBoss: true,
-                    shootTimer: 0,
+                    width: 80, height: 80,
+                    speed: 1, health: 10, maxHealth: 10,
+                    isBoss: true, shootTimer: 0,
                     angle: 0,
                     centerX: rocketCanvas.width * 0.7,
                     centerY: rocketCanvas.height / 2,
@@ -1439,7 +1386,6 @@
                 });
             }
             
-            // Reset bonus enemies efter spawning
             rocketBonusEnemies = 0;
         }
 
@@ -1479,9 +1425,7 @@
                 rocketBullets.push({
                     x: rocketPlayer.x + rocketPlayer.width,
                     y: rocketPlayer.y + rocketPlayer.height / 2,
-                    width: 10,
-                    height: 4,
-                    speed: 8
+                    width: 10, height: 4, speed: 8
                 });
                 rocketShootTimer = 0;
             }
@@ -1489,13 +1433,9 @@
             rocketBullets.forEach(b => b.x += b.speed);
             rocketBullets = rocketBullets.filter(b => b.x < rocketCanvas.width);
             
-            rocketEnemyBullets.forEach(b => {
-                b.x += b.speedX;
-                b.y += b.speedY;
-            });
+            rocketEnemyBullets.forEach(b => { b.x += b.speedX; b.y += b.speedY; });
             rocketEnemyBullets = rocketEnemyBullets.filter(b => 
-                b.x > -20 && b.x < rocketCanvas.width + 20 && 
-                b.y > -20 && b.y < rocketCanvas.height + 20
+                b.x > -20 && b.x < rocketCanvas.width + 20 && b.y > -20 && b.y < rocketCanvas.height + 20
             );
             
             rocketEnemies.forEach(e => {
@@ -1514,7 +1454,6 @@
                         e.x = e.centerX + Math.cos(e.angle * 0.5) * 40;
                     }
                 }
-                
                 e.x = Math.max(rocketCanvas.width * 0.4, Math.min(rocketCanvas.width - e.width - 20, e.x));
                 e.y = Math.max(20, Math.min(rocketCanvas.height - e.height - 20, e.y));
                 
@@ -1524,15 +1463,11 @@
                     const dx = rocketPlayer.x - e.x;
                     const dy = rocketPlayer.y - e.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    const bulletSpeed = 3;
-                    
                     rocketEnemyBullets.push({
-                        x: e.x,
-                        y: e.y + e.height / 2,
-                        width: 8,
-                        height: 8,
-                        speedX: (dx / distance) * bulletSpeed,
-                        speedY: (dy / distance) * bulletSpeed
+                        x: e.x, y: e.y + e.height / 2,
+                        width: 8, height: 8,
+                        speedX: (dx / distance) * 3,
+                        speedY: (dy / distance) * 3
                     });
                     e.shootTimer = 0;
                 }
@@ -1540,8 +1475,7 @@
             
             rocketBullets.forEach((b, bIndex) => {
                 rocketEnemies.forEach((e, eIndex) => {
-                    if (b.x < e.x + e.width && b.x + b.width > e.x &&
-                        b.y < e.y + e.height && b.y + b.height > e.y) {
+                    if (b.x < e.x + e.width && b.x + b.width > e.x && b.y < e.y + e.height && b.y + b.height > e.y) {
                         rocketBullets.splice(bIndex, 1);
                         e.health--;
                         if (e.health <= 0) {
@@ -1559,9 +1493,7 @@
                     rocketEnemyBullets.splice(bIndex, 1);
                     rocketLives--;
                     updateRocketUI();
-                    if (rocketLives <= 0) {
-                        gameOverRocket();
-                    }
+                    if (rocketLives <= 0) gameOverRocket();
                 }
             });
             
@@ -1587,12 +1519,10 @@
             rocketCtx.save();
             rocketCtx.shadowBlur = 20;
             rocketCtx.shadowColor = '#00ffff';
-            
             const gradient = rocketCtx.createLinearGradient(rocketPlayer.x, rocketPlayer.y, rocketPlayer.x + rocketPlayer.width, rocketPlayer.y);
             gradient.addColorStop(0, '#00ccff');
             gradient.addColorStop(1, '#00ffff');
             rocketCtx.fillStyle = gradient;
-            
             rocketCtx.beginPath();
             rocketCtx.moveTo(rocketPlayer.x, rocketPlayer.y + rocketPlayer.height / 2);
             rocketCtx.lineTo(rocketPlayer.x + 10, rocketPlayer.y + 5);
@@ -1602,67 +1532,41 @@
             rocketCtx.lineTo(rocketPlayer.x + 10, rocketPlayer.y + rocketPlayer.height - 5);
             rocketCtx.closePath();
             rocketCtx.fill();
-            
             rocketCtx.restore();
             
             rocketCtx.save();
             rocketBullets.forEach(b => {
-                rocketCtx.shadowBlur = 15;
-                rocketCtx.shadowColor = '#ffff00';
-                rocketCtx.fillStyle = '#ffff00';
-                rocketCtx.beginPath();
-                rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2);
-                rocketCtx.fill();
+                rocketCtx.shadowBlur = 15; rocketCtx.shadowColor = '#ffff00'; rocketCtx.fillStyle = '#ffff00';
+                rocketCtx.beginPath(); rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2); rocketCtx.fill();
             });
             rocketCtx.restore();
             
             rocketCtx.save();
             rocketEnemyBullets.forEach(b => {
-                rocketCtx.shadowBlur = 15;
-                rocketCtx.shadowColor = '#ff0000';
-                rocketCtx.fillStyle = '#ff3333';
-                rocketCtx.beginPath();
-                rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2);
-                rocketCtx.fill();
+                rocketCtx.shadowBlur = 15; rocketCtx.shadowColor = '#ff0000'; rocketCtx.fillStyle = '#ff3333';
+                rocketCtx.beginPath(); rocketCtx.arc(b.x, b.y, 5, 0, Math.PI * 2); rocketCtx.fill();
             });
             rocketCtx.restore();
             
             rocketCtx.save();
             rocketEnemies.forEach(e => {
                 if (e.isBoss) {
-                    rocketCtx.shadowBlur = 30;
-                    rocketCtx.shadowColor = '#ff00ff';
-                    
-                    const bossGradient = rocketCtx.createRadialGradient(
-                        e.x + e.width / 2, e.y + e.height / 2, 10,
-                        e.x + e.width / 2, e.y + e.height / 2, e.width / 2
-                    );
-                    bossGradient.addColorStop(0, '#ff00ff');
-                    bossGradient.addColorStop(1, '#8800ff');
-                    rocketCtx.fillStyle = bossGradient;
-                    
-                    rocketCtx.beginPath();
-                    rocketCtx.arc(e.x + e.width / 2, e.y + e.height / 2, e.width / 2, 0, Math.PI * 2);
-                    rocketCtx.fill();
+                    rocketCtx.shadowBlur = 30; rocketCtx.shadowColor = '#ff00ff';
+                    const bg = rocketCtx.createRadialGradient(e.x + e.width/2, e.y + e.height/2, 10, e.x + e.width/2, e.y + e.height/2, e.width/2);
+                    bg.addColorStop(0, '#ff00ff'); bg.addColorStop(1, '#8800ff');
+                    rocketCtx.fillStyle = bg;
+                    rocketCtx.beginPath(); rocketCtx.arc(e.x + e.width/2, e.y + e.height/2, e.width/2, 0, Math.PI * 2); rocketCtx.fill();
                 } else {
-                    rocketCtx.shadowBlur = 15;
-                    rocketCtx.shadowColor = '#ff0000';
-                    
-                    const enemyGradient = rocketCtx.createRadialGradient(
-                        e.x + e.width / 2, e.y + e.height / 2, 5,
-                        e.x + e.width / 2, e.y + e.height / 2, e.width / 2
-                    );
-                    enemyGradient.addColorStop(0, '#ff6666');
-                    enemyGradient.addColorStop(1, '#ff0000');
-                    rocketCtx.fillStyle = enemyGradient;
-                    
+                    rocketCtx.shadowBlur = 15; rocketCtx.shadowColor = '#ff0000';
+                    const eg = rocketCtx.createRadialGradient(e.x + e.width/2, e.y + e.height/2, 5, e.x + e.width/2, e.y + e.height/2, e.width/2);
+                    eg.addColorStop(0, '#ff6666'); eg.addColorStop(1, '#ff0000');
+                    rocketCtx.fillStyle = eg;
                     rocketCtx.beginPath();
-                    rocketCtx.moveTo(e.x + e.width, e.y + e.height / 2);
-                    rocketCtx.lineTo(e.x + e.width / 2, e.y);
-                    rocketCtx.lineTo(e.x, e.y + e.height / 2);
-                    rocketCtx.lineTo(e.x + e.width / 2, e.y + e.height);
-                    rocketCtx.closePath();
-                    rocketCtx.fill();
+                    rocketCtx.moveTo(e.x + e.width, e.y + e.height/2);
+                    rocketCtx.lineTo(e.x + e.width/2, e.y);
+                    rocketCtx.lineTo(e.x, e.y + e.height/2);
+                    rocketCtx.lineTo(e.x + e.width/2, e.y + e.height);
+                    rocketCtx.closePath(); rocketCtx.fill();
                 }
             });
             rocketCtx.restore();
@@ -1671,18 +1575,12 @@
                 rocketCtx.save();
                 rocketCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
                 rocketCtx.fillRect(0, 0, rocketCanvas.width, rocketCanvas.height);
-                
-                rocketCtx.shadowBlur = 30;
-                rocketCtx.shadowColor = '#00ffff';
-                rocketCtx.fillStyle = '#00ffff';
-                rocketCtx.font = 'bold 120px Arial';
-                rocketCtx.textAlign = 'center';
-                rocketCtx.fillText(rocketCountdown, rocketCanvas.width / 2, rocketCanvas.height / 2 + 40);
-                
-                rocketCtx.shadowBlur = 0;
-                rocketCtx.fillStyle = '#ffffff';
+                rocketCtx.shadowBlur = 30; rocketCtx.shadowColor = '#00ffff'; rocketCtx.fillStyle = '#00ffff';
+                rocketCtx.font = 'bold 120px Arial'; rocketCtx.textAlign = 'center';
+                rocketCtx.fillText(rocketCountdown, rocketCanvas.width/2, rocketCanvas.height/2 + 40);
+                rocketCtx.shadowBlur = 0; rocketCtx.fillStyle = '#ffffff';
                 rocketCtx.font = 'bold 30px Arial';
-                rocketCtx.fillText('VÅG ' + rocketWave, rocketCanvas.width / 2, rocketCanvas.height / 2 - 60);
+                rocketCtx.fillText('VÅG ' + rocketWave, rocketCanvas.width/2, rocketCanvas.height/2 - 60);
                 rocketCtx.restore();
             }
         }
@@ -1709,16 +1607,11 @@
             wordElement.dataset.mode = mode;
             answerInput.value = '';
             document.getElementById('rocket-glos-feedback').innerHTML = '';
-            
-            // Reset attempts counter för nytt ord
             rocketGlosAttempts = 0;
             
             questionContainer.classList.remove('hidden');
             answerInput.focus();
-            
-            answerInput.onkeypress = (e) => {
-                if (e.key === 'Enter') checkRocketGlosAnswer();
-            };
+            answerInput.onkeypress = (e) => { if (e.key === 'Enter') checkRocketGlosAnswer(); };
         }
 
         function checkRocketGlosAnswer() {
@@ -1736,60 +1629,29 @@
                     document.getElementById('rocket-question-container').classList.add('hidden');
                     rocketGlosIndex++;
                     rocketWave++;
-                    
-                    if (rocketWave > 4) {
-                        rocketWave = 1;
-                    }
-                    
+                    if (rocketWave > 4) rocketWave = 1;
                     updateRocketUI();
-                    
-                    rocketEnemies = [];
-                    rocketEnemyBullets = [];
-                    rocketKeys = {};
-                    
-                    rocketCountdown = 3;
-                    rocketCountdownActive = true;
-                    rocketPaused = false;
-                    
-                    const countdownInterval = setInterval(() => {
+                    rocketEnemies = []; rocketEnemyBullets = []; rocketKeys = {};
+                    rocketCountdown = 3; rocketCountdownActive = true; rocketPaused = false;
+                    const ci = setInterval(() => {
                         rocketCountdown--;
-                        if (rocketCountdown <= 0) {
-                            clearInterval(countdownInterval);
-                            rocketCountdownActive = false;
-                            spawnEnemyWave();
-                        }
+                        if (rocketCountdown <= 0) { clearInterval(ci); rocketCountdownActive = false; spawnEnemyWave(); }
                     }, 1000);
                 }, 1500);
             } else if (rocketGlosAttempts >= 2) {
-                // Efter 2 fel svar - tvinga nästa våg MED straff (+1 extra fiende)
                 rocketBonusEnemies = 1;
                 feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel 2 gånger! Rätt svar: ${correctAnswer}<br><strong>⚠️ Straff: +1 extra fiende nästa våg!</strong></div>`;
                 setTimeout(() => {
                     document.getElementById('rocket-question-container').classList.add('hidden');
                     rocketGlosIndex++;
                     rocketWave++;
-                    
-                    if (rocketWave > 4) {
-                        rocketWave = 1;
-                    }
-                    
+                    if (rocketWave > 4) rocketWave = 1;
                     updateRocketUI();
-                    
-                    rocketEnemies = [];
-                    rocketEnemyBullets = [];
-                    rocketKeys = {};
-                    
-                    rocketCountdown = 3;
-                    rocketCountdownActive = true;
-                    rocketPaused = false;
-                    
-                    const countdownInterval = setInterval(() => {
+                    rocketEnemies = []; rocketEnemyBullets = []; rocketKeys = {};
+                    rocketCountdown = 3; rocketCountdownActive = true; rocketPaused = false;
+                    const ci = setInterval(() => {
                         rocketCountdown--;
-                        if (rocketCountdown <= 0) {
-                            clearInterval(countdownInterval);
-                            rocketCountdownActive = false;
-                            spawnEnemyWave();
-                        }
+                        if (rocketCountdown <= 0) { clearInterval(ci); rocketCountdownActive = false; spawnEnemyWave(); }
                     }, 1000);
                 }, 2500);
             } else {
@@ -1800,17 +1662,11 @@
         function gameOverRocket() {
             rocketGameRunning = false;
             rocketPaused = true;
-            
-            if (rocketGameLoop) {
-                cancelAnimationFrame(rocketGameLoop);
-                rocketGameLoop = null;
-            }
-            
+            if (rocketGameLoop) { cancelAnimationFrame(rocketGameLoop); rocketGameLoop = null; }
             document.removeEventListener('keydown', handleRocketKeyDown);
             document.removeEventListener('keyup', handleRocketKeyUp);
             removeMobileControls();
             rocketKeys = {};
-            
             alert(`Game Over! 💥\n\nDin slutpoäng: ${rocketScore}\nVågor klarade: ${rocketWave - 1}`);
             goToMainMenu();
         }
@@ -1830,7 +1686,7 @@
             row.className = 'glos-row';
             row.innerHTML = `
                 <input type="text" placeholder="Svenskt ord" class="fc-glos-sv">
-                <input type="text" placeholder="Spanskt ord" class="fc-glos-es">
+                <input type="text" placeholder="Annat språk" class="fc-glos-es">
                 <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
             `;
             container.appendChild(row);
@@ -1870,7 +1726,6 @@
 
             const card = flipCardsData[flipCardsCurrent];
             flipCardsIsFlipped = false;
-            
             document.getElementById('flipcard-inner').classList.remove('flipped');
             document.getElementById('flipcard-front-text').textContent = card.svenska;
             document.getElementById('flipcard-back-text').textContent = card.spanska;
@@ -1881,22 +1736,12 @@
         function flipCard() {
             flipCardsIsFlipped = !flipCardsIsFlipped;
             const inner = document.getElementById('flipcard-inner');
-            if (flipCardsIsFlipped) {
-                inner.classList.add('flipped');
-            } else {
-                inner.classList.remove('flipped');
-            }
+            if (flipCardsIsFlipped) { inner.classList.add('flipped'); } else { inner.classList.remove('flipped'); }
         }
 
         function markCard(status) {
             const card = flipCardsData[flipCardsCurrent];
-            
-            if (status === 'known') {
-                flipCardsKnown.push(card);
-            } else {
-                flipCardsUnknown.push(card);
-            }
-            
+            if (status === 'known') { flipCardsKnown.push(card); } else { flipCardsUnknown.push(card); }
             nextCard();
         }
 
@@ -1915,20 +1760,15 @@
 
         function restartFlipCards(mode) {
             if (mode === 'mistakes') {
-                if (flipCardsUnknown.length === 0) {
-                    alert('Inga misstag att öva på! Du kunde alla! 🎉');
-                    return;
-                }
+                if (flipCardsUnknown.length === 0) { alert('Inga misstag att öva på! Du kunde alla! 🎉'); return; }
                 flipCardsData = [...flipCardsUnknown];
             } else {
                 flipCardsData = [...flipCardsOriginalData];
             }
-            
             flipCardsData.sort(() => Math.random() - 0.5);
             flipCardsCurrent = 0;
             flipCardsKnown = [];
             flipCardsUnknown = [];
-            
             document.getElementById('flipcard').style.display = 'block';
             document.querySelector('#screen-flipcards .button-group:not(#flipcard-buttons)').style.display = 'flex';
             document.getElementById('flipcard-complete').classList.add('hidden');
@@ -1949,7 +1789,7 @@
             row.className = 'glos-row';
             row.innerHTML = `
                 <input type="text" placeholder="Svenskt ord" class="glos-sv">
-                <input type="text" placeholder="Spanskt ord" class="glos-es">
+                <input type="text" placeholder="Annat språk" class="glos-es">
                 <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
             `;
             container.appendChild(row);
@@ -1982,6 +1822,7 @@
             correct = 0;
             wrong = 0;
             attemptsLeft = 2;
+            waitingForNext = false;
             
             showScreen('screen-test');
             displayQuestion();
@@ -2031,10 +1872,7 @@
                 const ellos = form.querySelector('.verb-ellos').value.trim();
                 
                 if (name && yo && tu && el && nosotros && vosotros && ellos) {
-                    verbData.push({
-                        svenska: name,
-                        spanska: [yo, tu, el, nosotros, vosotros, ellos]
-                    });
+                    verbData.push({ svenska: name, spanska: [yo, tu, el, nosotros, vosotros, ellos] });
                 }
             });
 
@@ -2046,11 +1884,7 @@
             testType = 'verb';
             currentWords = [...verbData];
             currentWords.sort(() => Math.random() - 0.5);
-            
-            currentIndex = 0;
-            correct = 0;
-            wrong = 0;
-            attemptsLeft = 2;
+            currentIndex = 0; correct = 0; wrong = 0; attemptsLeft = 2; waitingForNext = false;
             
             showScreen('screen-test');
             displayQuestion();
@@ -2065,6 +1899,11 @@
             const item = currentWords[currentIndex];
             document.getElementById('progress').textContent = `Ord ${currentIndex + 1} av ${currentWords.length}`;
             document.getElementById('feedback').innerHTML = '';
+            waitingForNext = false;
+
+            // Show/hide answer vs next buttons
+            document.getElementById('btn-check').classList.remove('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
 
             if (testType === 'glosor') {
                 const displayWord = mode === 'svenska' ? item.svenska : item.spanska;
@@ -2074,13 +1913,15 @@
                 `;
                 document.getElementById('answer-input').focus();
                 document.getElementById('answer-input').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') checkAnswer();
+                    if (e.key === 'Enter') {
+                        if (waitingForNext) { nextWord(); }
+                        else { checkAnswer(); }
+                    }
                 });
             } else if (testType === 'verb') {
                 document.getElementById('question').textContent = item.svenska;
                 let html = '';
                 correctFlags = Array(6).fill(false);
-                
                 for (let i = 0; i < 6; i++) {
                     html += `
                         <div class="irreg-input-row">
@@ -2091,16 +1932,32 @@
                 }
                 document.getElementById('answer-area').innerHTML = html;
                 document.getElementById('input-0').focus();
-                
                 for (let i = 0; i < 6; i++) {
                     document.getElementById(`input-${i}`).addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') checkAnswer();
+                        if (e.key === 'Enter') {
+                            if (waitingForNext) { nextWord(); }
+                            else { checkAnswer(); }
+                        }
                     });
                 }
             }
         }
 
+        function showNextButton() {
+            waitingForNext = true;
+            document.getElementById('btn-check').classList.add('hidden');
+            document.getElementById('btn-next').classList.remove('hidden');
+        }
+
+        function nextWord() {
+            currentIndex++;
+            attemptsLeft = 2;
+            displayQuestion();
+        }
+
         function checkAnswer() {
+            if (waitingForNext) return;
+            
             const item = currentWords[currentIndex];
             const feedbackDiv = document.getElementById('feedback');
 
@@ -2111,22 +1968,14 @@
                 if (answer === correctAnswer) {
                     feedbackDiv.innerHTML = '<div class="feedback correct">✅ Rätt!</div>';
                     correct++;
-                    setTimeout(() => {
-                        currentIndex++;
-                        attemptsLeft = 2;
-                        displayQuestion();
-                    }, 1500);
+                    showNextButton();
                 } else {
                     attemptsLeft--;
                     if (attemptsLeft === 0) {
                         const displayCorrect = mode === 'svenska' ? item.spanska : item.svenska;
                         feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel! Rätt svar: ${displayCorrect}</div>`;
                         wrong++;
-                        setTimeout(() => {
-                            currentIndex++;
-                            attemptsLeft = 2;
-                            displayQuestion();
-                        }, 3000);
+                        showNextButton();
                     } else {
                         feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen!</div>';
                     }
@@ -2139,46 +1988,33 @@
                 for (let i = 0; i < 6; i++) {
                     const input = document.getElementById(`input-${i}`);
                     const answer = input.value.trim().toLowerCase();
-                    
                     if (!correctFlags[i] && answer === correctForms[i]) {
                         correctFlags[i] = true;
                         newlyCorrect++;
                         input.classList.add('correct');
                         input.disabled = true;
                     }
-                    
                     if (correctFlags[i]) totalCorrect++;
                 }
 
                 if (totalCorrect === 6) {
                     feedbackDiv.innerHTML = '<div class="feedback correct">✅ Rätt på alla böjningar!</div>';
                     correct++;
-                    setTimeout(() => {
-                        currentIndex++;
-                        attemptsLeft = 2;
-                        displayQuestion();
-                    }, 2000);
+                    showNextButton();
                 } else {
                     attemptsLeft--;
                     if (attemptsLeft === 0) {
                         feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel! Rätt svar: ${item.spanska.join(', ')}</div>`;
                         wrong++;
-                        setTimeout(() => {
-                            currentIndex++;
-                            attemptsLeft = 2;
-                            displayQuestion();
-                        }, 3000);
+                        showNextButton();
                     } else {
                         if (newlyCorrect > 0) {
                             feedbackDiv.innerHTML = `<div class="feedback correct">✅ ${newlyCorrect} nya rätt! Totalt ${totalCorrect}/6. Försök igen!</div>`;
                         } else {
                             feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Inga nya rätt. ${totalCorrect}/6 klara. Försök igen!</div>`;
                         }
-                        
                         for (let i = 0; i < 6; i++) {
-                            if (!correctFlags[i]) {
-                                document.getElementById(`input-${i}`).value = '';
-                            }
+                            if (!correctFlags[i]) document.getElementById(`input-${i}`).value = '';
                         }
                     }
                 }
@@ -2192,66 +2028,49 @@
         }
 
         function restartTest() {
-            if (testType === 'glosor') {
-                startGlosTest(mode);
-            } else if (testType === 'verb') {
-                startVerbTest();
-            }
+            if (testType === 'glosor') { startGlosTest(mode); }
+            else if (testType === 'verb') { startVerbTest(); }
         }
 
         // === EXPORT/IMPORT FUNKTIONER ===
 
-        // Glosor
         function exportGlosor() {
             const data = [];
             document.querySelectorAll('#glos-container .glos-row').forEach(row => {
                 const sv = row.querySelector('.glos-sv').value.trim();
                 const es = row.querySelector('.glos-es').value.trim();
-                if (sv && es) {
-                    data.push({ svenska: sv, spanska: es });
-                }
+                if (sv && es) data.push({ svenska: sv, spanska: es });
             });
-
-            if (data.length === 0) {
-                alert('Inga glosor att spara!');
-                return;
-            }
-
+            if (data.length === 0) { alert('Inga glosor att spara!'); return; }
             downloadJSON(data, 'glosor.json');
         }
 
         function importGlosor(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
                     const container = document.getElementById('glos-container');
                     container.innerHTML = '';
-
                     data.forEach(item => {
                         const row = document.createElement('div');
                         row.className = 'glos-row';
                         row.innerHTML = `
                             <input type="text" placeholder="Svenskt ord" class="glos-sv" value="${item.svenska}">
-                            <input type="text" placeholder="Spanskt ord" class="glos-es" value="${item.spanska}">
+                            <input type="text" placeholder="Annat språk" class="glos-es" value="${item.spanska}">
                             <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
                         `;
                         container.appendChild(row);
                     });
-
                     alert(`✅ ${data.length} glosor inlästa!`);
-                } catch (error) {
-                    alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.');
-                }
+                } catch (error) { alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.'); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // Verb
         function exportVerb() {
             const data = [];
             document.querySelectorAll('.verb-form').forEach(form => {
@@ -2262,222 +2081,157 @@
                 const nosotros = form.querySelector('.verb-nosotros').value.trim();
                 const vosotros = form.querySelector('.verb-vosotros').value.trim();
                 const ellos = form.querySelector('.verb-ellos').value.trim();
-                
                 if (name && yo && tu && el && nosotros && vosotros && ellos) {
-                    data.push({
-                        name: name,
-                        yo: yo,
-                        tu: tu,
-                        el: el,
-                        nosotros: nosotros,
-                        vosotros: vosotros,
-                        ellos: ellos
-                    });
+                    data.push({ name, yo, tu, el, nosotros, vosotros, ellos });
                 }
             });
-
-            if (data.length === 0) {
-                alert('Inga verb att spara!');
-                return;
-            }
-
+            if (data.length === 0) { alert('Inga verb att spara!'); return; }
             downloadJSON(data, 'verb.json');
         }
 
         function importVerb(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
                     const container = document.getElementById('verb-container');
                     container.innerHTML = '';
-
                     data.forEach(verb => {
                         const formDiv = document.createElement('div');
                         formDiv.className = 'verb-form';
                         formDiv.innerHTML = `
                             <label>Verb (grundform):</label>
-                            <input type="text" placeholder="t.ex. Ser, Hacer, etc." class="verb-name" value="${verb.name}">
-                            <label>yo:</label>
-                            <input type="text" placeholder="t.ex. soy, hago" class="verb-yo" value="${verb.yo}">
-                            <label>tú:</label>
-                            <input type="text" placeholder="t.ex. eres, haces" class="verb-tu" value="${verb.tu}">
-                            <label>él/ella:</label>
-                            <input type="text" placeholder="t.ex. es, hace" class="verb-el" value="${verb.el}">
-                            <label>nosotros:</label>
-                            <input type="text" placeholder="t.ex. somos, hacemos" class="verb-nosotros" value="${verb.nosotros}">
-                            <label>vosotros:</label>
-                            <input type="text" placeholder="t.ex. sois, hacéis" class="verb-vosotros" value="${verb.vosotros}">
-                            <label>ellos/ellas:</label>
-                            <input type="text" placeholder="t.ex. son, hacen" class="verb-ellos" value="${verb.ellos}">
+                            <input type="text" class="verb-name" value="${verb.name}">
+                            <label>yo:</label><input type="text" class="verb-yo" value="${verb.yo}">
+                            <label>tú:</label><input type="text" class="verb-tu" value="${verb.tu}">
+                            <label>él/ella:</label><input type="text" class="verb-el" value="${verb.el}">
+                            <label>nosotros:</label><input type="text" class="verb-nosotros" value="${verb.nosotros}">
+                            <label>vosotros:</label><input type="text" class="verb-vosotros" value="${verb.vosotros}">
+                            <label>ellos/ellas:</label><input type="text" class="verb-ellos" value="${verb.ellos}">
                             <button class="remove-btn" onclick="this.parentElement.remove()" style="margin-top: 10px; width: 100%;">Ta bort verb</button>
                         `;
                         container.appendChild(formDiv);
                     });
-
                     alert(`✅ ${data.length} verb inlästa!`);
-                } catch (error) {
-                    alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.');
-                }
+                } catch (error) { alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.'); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // FlipCards
         function exportFlipCards() {
             const data = [];
             document.querySelectorAll('#flipcards-glos-container .glos-row').forEach(row => {
                 const sv = row.querySelector('.fc-glos-sv').value.trim();
                 const es = row.querySelector('.fc-glos-es').value.trim();
-                if (sv && es) {
-                    data.push({ svenska: sv, spanska: es });
-                }
+                if (sv && es) data.push({ svenska: sv, spanska: es });
             });
-
-            if (data.length === 0) {
-                alert('Inga glosor att spara!');
-                return;
-            }
-
+            if (data.length === 0) { alert('Inga glosor att spara!'); return; }
             downloadJSON(data, 'flipcards.json');
         }
 
         function importFlipCards(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
                     const container = document.getElementById('flipcards-glos-container');
                     container.innerHTML = '';
-
                     data.forEach(item => {
                         const row = document.createElement('div');
                         row.className = 'glos-row';
                         row.innerHTML = `
                             <input type="text" placeholder="Svenskt ord" class="fc-glos-sv" value="${item.svenska}">
-                            <input type="text" placeholder="Spanskt ord" class="fc-glos-es" value="${item.spanska}">
+                            <input type="text" placeholder="Annat språk" class="fc-glos-es" value="${item.spanska}">
                             <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
                         `;
                         container.appendChild(row);
                     });
-
                     alert(`✅ ${data.length} glosor inlästa!`);
-                } catch (error) {
-                    alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.');
-                }
+                } catch (error) { alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.'); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // BlockBlast
         function exportBlockBlast() {
             const data = [];
             document.querySelectorAll('#blockblast-glos-container .glos-row').forEach(row => {
                 const sv = row.querySelector('.bb-glos-sv').value.trim();
                 const es = row.querySelector('.bb-glos-es').value.trim();
-                if (sv && es) {
-                    data.push({ svenska: sv, spanska: es });
-                }
+                if (sv && es) data.push({ svenska: sv, spanska: es });
             });
-
-            if (data.length === 0) {
-                alert('Inga glosor att spara!');
-                return;
-            }
-
+            if (data.length === 0) { alert('Inga glosor att spara!'); return; }
             downloadJSON(data, 'blockblast-glosor.json');
         }
 
         function importBlockBlast(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
                     const container = document.getElementById('blockblast-glos-container');
                     container.innerHTML = '';
-
                     data.forEach(item => {
                         const row = document.createElement('div');
                         row.className = 'glos-row';
                         row.innerHTML = `
                             <input type="text" placeholder="Svenskt ord" class="bb-glos-sv" value="${item.svenska}">
-                            <input type="text" placeholder="Spanskt ord" class="bb-glos-es" value="${item.spanska}">
+                            <input type="text" placeholder="Annat språk" class="bb-glos-es" value="${item.spanska}">
                             <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
                         `;
                         container.appendChild(row);
                     });
-
                     alert(`✅ ${data.length} glosor inlästa!`);
-                } catch (error) {
-                    alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.');
-                }
+                } catch (error) { alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.'); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // RocketShips
         function exportRocketShips() {
             const data = [];
             document.querySelectorAll('#rocketships-glos-container .glos-row').forEach(row => {
                 const sv = row.querySelector('.rs-glos-sv').value.trim();
                 const es = row.querySelector('.rs-glos-es').value.trim();
-                if (sv && es) {
-                    data.push({ svenska: sv, spanska: es });
-                }
+                if (sv && es) data.push({ svenska: sv, spanska: es });
             });
-
-            if (data.length === 0) {
-                alert('Inga glosor att spara!');
-                return;
-            }
-
+            if (data.length === 0) { alert('Inga glosor att spara!'); return; }
             downloadJSON(data, 'rocketships-glosor.json');
         }
 
         function importRocketShips(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
                     const container = document.getElementById('rocketships-glos-container');
                     container.innerHTML = '';
-
                     data.forEach(item => {
                         const row = document.createElement('div');
                         row.className = 'glos-row';
                         row.innerHTML = `
                             <input type="text" placeholder="Svenskt ord" class="rs-glos-sv" value="${item.svenska}">
-                            <input type="text" placeholder="Spanskt ord" class="rs-glos-es" value="${item.spanska}">
+                            <input type="text" placeholder="Annat språk" class="rs-glos-es" value="${item.spanska}">
                             <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
                         `;
                         container.appendChild(row);
                     });
-
                     alert(`✅ ${data.length} glosor inlästa!`);
-                } catch (error) {
-                    alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.');
-                }
+                } catch (error) { alert('❌ Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.'); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // Hjälpfunktion för att ladda ner JSON
         function downloadJSON(data, filename) {
             const json = JSON.stringify(data, null, 2);
             const blob = new Blob([json], { type: 'application/json' });
