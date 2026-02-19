@@ -777,6 +777,7 @@
             </div>
             <div class="button-group">
                 <button onclick="restartTest()">Starta om</button>
+                <button id="btn-redo-mistakes" onclick="restartMistakes()" style="background: #dc3545;">🔄 Gör om felen</button>
                 <button onclick="goToMainMenu()">Meny</button>
             </div>
         </div>
@@ -795,6 +796,7 @@
         let attemptsLeft = 2;
         let correctFlags = [];
         let waitingForNext = false; // NEW: tracks if we're waiting for user to click Nästa
+        let wrongWords = []; // tracks words answered incorrectly
 
         let gameGrid = [];
         let gameScore = 0;
@@ -1823,6 +1825,7 @@
             wrong = 0;
             attemptsLeft = 2;
             waitingForNext = false;
+            wrongWords = [];
             
             showScreen('screen-test');
             displayQuestion();
@@ -1884,7 +1887,7 @@
             testType = 'verb';
             currentWords = [...verbData];
             currentWords.sort(() => Math.random() - 0.5);
-            currentIndex = 0; correct = 0; wrong = 0; attemptsLeft = 2; waitingForNext = false;
+            currentIndex = 0; correct = 0; wrong = 0; attemptsLeft = 2; waitingForNext = false; wrongWords = [];
             
             showScreen('screen-test');
             displayQuestion();
@@ -1975,6 +1978,7 @@
                         const displayCorrect = mode === 'svenska' ? item.spanska : item.svenska;
                         feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel! Rätt svar: ${displayCorrect}</div>`;
                         wrong++;
+                        wrongWords.push(item);
                         showNextButton();
                     } else {
                         feedbackDiv.innerHTML = '<div class="feedback wrong">❌ Fel, försök igen!</div>';
@@ -2006,6 +2010,7 @@
                     if (attemptsLeft === 0) {
                         feedbackDiv.innerHTML = `<div class="feedback wrong">❌ Fel! Rätt svar: ${item.spanska.join(', ')}</div>`;
                         wrong++;
+                        wrongWords.push(item);
                         showNextButton();
                     } else {
                         if (newlyCorrect > 0) {
@@ -2024,12 +2029,34 @@
         function showResults() {
             document.getElementById('final-correct').textContent = correct;
             document.getElementById('final-wrong').textContent = wrong;
+            // Show "Gör om felen" only if there are mistakes
+            const btn = document.getElementById('btn-redo-mistakes');
+            if (wrongWords.length > 0) {
+                btn.style.display = '';
+            } else {
+                btn.style.display = 'none';
+            }
             showScreen('screen-result');
         }
 
         function restartTest() {
             if (testType === 'glosor') { startGlosTest(mode); }
             else if (testType === 'verb') { startVerbTest(); }
+        }
+
+        function restartMistakes() {
+            if (wrongWords.length === 0) return;
+            // Use only the wrong words, reset state
+            currentWords = [...wrongWords];
+            currentWords.sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            correct = 0;
+            wrong = 0;
+            attemptsLeft = 2;
+            waitingForNext = false;
+            wrongWords = [];
+            showScreen('screen-test');
+            displayQuestion();
         }
 
         // === EXPORT/IMPORT FUNKTIONER ===
